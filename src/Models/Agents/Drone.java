@@ -8,7 +8,11 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 
-public class Drone extends Agent {
+public class Drone extends Vehicle {
+
+    public Drone() {
+        super(5, 250, 100, Vehicle.AIR);
+    }
 
     private class PingPongBehaviour extends SimpleBehaviour {
         private int n = 0;

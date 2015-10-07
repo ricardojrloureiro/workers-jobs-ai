@@ -1,7 +1,8 @@
 package Models.Agents;
 
-import jade.core.Agent;
+public class Car extends Vehicle {
 
-public class Car extends Agent {
-
+    public Car() {
+        super(3, 500, 550, Vehicle.STREET);
+    }
 }
