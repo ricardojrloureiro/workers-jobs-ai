@@ -1,5 +1,7 @@
 package Models.Agents;
 
+import Models.Tool;
+import com.sun.tools.javac.util.Pair;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -8,11 +10,23 @@ import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 
+import java.util.ArrayList;
+
 public class Drone extends Vehicle {
 
-    public Drone() {
-        super(5, 250, 100, Vehicle.AIR);
+
+    private static ArrayList<Integer> generateToolsArray()
+    {
+        ArrayList<Integer> tools = new ArrayList<>();
+        tools.add(Tool.f1);
+
+        return tools;
     }
+
+    public Drone() {
+        super(5, 250, 100, Vehicle.AIR, new Pair<>(0.0f, 0.0f), Drone.generateToolsArray());
+    }
+
 
     private class PingPongBehaviour extends SimpleBehaviour {
         private int n = 0;
