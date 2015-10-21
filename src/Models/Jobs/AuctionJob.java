@@ -1,4 +1,4 @@
-package Models;
+package Models.Jobs;
 
 public class AuctionJob extends Job {
 

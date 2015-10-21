@@ -1,6 +1,6 @@
-package Models;
+package Models.Jobs;
 
-public class FixedPriceJob extends Job{
+public class FixedPriceJob extends Job {
 
     private float price;
 
