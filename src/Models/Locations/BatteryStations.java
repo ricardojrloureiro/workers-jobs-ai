@@ -1,12 +1,12 @@
 package Models.Locations;
 
-public class BatteryStations extends Location {
+public class BatteryStations extends PointOfInterest {
 
     private float chargePerMinute;
 
-    public BatteryStations(String name, float chargePerMinute)
+    public BatteryStations(int id, String name, float chargePerMinute)
     {
-        super(name);
+        super(id, name);
         this.chargePerMinute = chargePerMinute;
     }
 

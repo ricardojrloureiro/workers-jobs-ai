@@ -1,18 +1,17 @@
 package Models.Locations;
 
-import Models.Locations.Location;
 import Models.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Store extends Location {
+public class Store extends PointOfInterest {
 
     private ArrayList< HashMap<Product, Integer> > products;
 
-    public Store(String name)
+    public Store(int id, String name)
     {
-        super(name);
+        super(id, name);
     }
 
 
