@@ -2,7 +2,7 @@ package Models.Agents;
 
 
 import Models.Tool;
-import com.sun.tools.javac.util.Pair;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 

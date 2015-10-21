@@ -1,7 +1,7 @@
 package Models.Agents;
 
-import com.sun.tools.javac.util.Pair;
 import jade.core.Agent;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 

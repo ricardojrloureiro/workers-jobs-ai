@@ -1,7 +1,6 @@
 package Models.Agents;
 
 import Models.Tool;
-import com.sun.tools.javac.util.Pair;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
@@ -9,6 +8,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 
