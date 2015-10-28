@@ -6,6 +6,7 @@ import Models.Agents.Locations.Store;
 import Models.Agents.Locations.Warehouse;
 import javafx.util.Pair;
 import org.jgrapht.UndirectedGraph;
+import org.jgrapht.alg.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
 import org.w3c.dom.Document;
@@ -18,6 +19,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.stream.Stream;
 
 public class Map {
 
@@ -46,6 +48,7 @@ public class Map {
         public float getDistance() {
             return mDistance;
         }
+
     }
 
     private void parse (String filepath) throws ParserConfigurationException {
@@ -56,11 +59,46 @@ public class Map {
 
             Element rootEle = doc.getDocumentElement();
             parseLocations(rootEle);
+            parseConections(rootEle);
+
+            System.out.println(map);
+            Stream<Location> matchesId1 =  map.vertexSet().stream().filter(l -> l.getId() == 1);
+            Stream<Location> matchesId2 =  map.vertexSet().stream().filter(l -> l.getId() == 6);
+
+            Location l1 = matchesId1.findFirst().get();
+            Location l2 = matchesId2.findFirst().get();
+            System.out.println(DijkstraShortestPath.findPathBetween(map, l1, l2));
 
         } catch (SAXException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+
+    }
+
+    private void parseConections(Element root) {
+        NodeList connections = root.getElementsByTagName("connection");
+
+        for(int i = 0; i < connections.getLength(); i++) {
+            Element connection = (Element) connections.item(i);
+
+            int id1 = Integer.parseInt(connection.getAttribute("id1"));
+            int id2 = Integer.parseInt(connection.getAttribute("id2"));
+
+
+            Stream<Location> matchesId1 =  map.vertexSet().stream().filter(l -> l.getId() == id1);
+            Stream<Location> matchesId2 =  map.vertexSet().stream().filter(l -> l.getId() == id2);
+
+            Location l1 = matchesId1.findFirst().get();
+            Location l2 = matchesId2.findFirst().get();
+
+            float distance = (float) Math.sqrt((l1.getPosition().getKey()-l2.getPosition().getKey())*(l1.getPosition().getKey()-l2.getPosition().getKey()) + (l1.getPosition().getValue()-l2.getPosition().getValue())*(l1.getPosition().getValue()-l2.getPosition().getValue()));
+
+            System.out.println(distance);
+
+            map.addEdge(l1,l2,new DistanceEdge(distance));
+
         }
 
     }

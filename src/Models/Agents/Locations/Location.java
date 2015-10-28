@@ -17,9 +17,16 @@ public class Location extends Agent {
         return mPosition;
     }
 
+    public int getId() {
+        return mId;
+    }
+
     public void setPosition(Pair<Float, Float> mPosition) {
         this.mPosition = mPosition;
     }
 
+    @Override public String toString() {
+        return "" + mId;
+    }
 
 }
