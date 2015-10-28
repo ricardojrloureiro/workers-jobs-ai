@@ -1,8 +1,9 @@
-package Models.Locations;
+package Models.Agents.Locations;
 
+import jade.core.Agent;
 import javafx.util.Pair;
 
-public class Location {
+public class Location extends Agent {
 
     private Pair<Float, Float> mPosition;
     private int mId;

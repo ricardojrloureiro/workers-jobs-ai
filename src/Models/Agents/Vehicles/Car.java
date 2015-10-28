@@ -1,9 +1,8 @@
-package Models.Agents;
+package Models.Agents.Vehicles;
 
 import Models.Tool;
 import javafx.util.Pair;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 public class Car extends Vehicle {

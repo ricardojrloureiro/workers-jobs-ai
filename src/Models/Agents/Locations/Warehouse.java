@@ -1,19 +1,23 @@
-package Models.Locations;
+package Models.Agents.Locations;
+
 
 import Models.Product;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Store extends PointOfInterest {
+public class Warehouse extends PointOfInterest {
 
+    public static final String WAREHOUSE_TYPE = "warehouse";
+
+    private float maxWeight;
     private ArrayList< HashMap<Product, Integer> > products;
 
-    public Store(int id, String name)
+    public Warehouse(int id, String name, float maxWeight)
     {
         super(id, name);
+        this.maxWeight = maxWeight;
     }
-
 
     public void addProduct(Product product, int quantity)
     {
@@ -23,5 +27,4 @@ public class Store extends PointOfInterest {
     }
 
     // TODO: check for needed products
-
 }

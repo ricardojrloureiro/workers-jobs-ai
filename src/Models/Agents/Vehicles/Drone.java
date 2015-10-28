@@ -1,4 +1,4 @@
-package Models.Agents;
+package Models.Agents.Vehicles;
 
 import Models.Tool;
 import jade.core.Agent;
@@ -58,6 +58,8 @@ public class Drone extends Vehicle {
         }
 
     }
+
+
     // método setup
     protected void setup() {
         String tipo = "";

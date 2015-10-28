@@ -1,4 +1,4 @@
-package Models.Locations;
+package Models.Agents.Locations;
 
 
 import javafx.util.Pair;
@@ -20,7 +20,7 @@ public class PointOfInterest extends Location {
     }
 
 
-    public String getName() {
+    public String getPOIName() {
         return name;
     }
 

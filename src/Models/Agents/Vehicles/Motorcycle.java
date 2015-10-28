@@ -1,4 +1,4 @@
-package Models.Agents;
+package Models.Agents.Vehicles;
 
 import Models.Tool;
 import javafx.util.Pair;

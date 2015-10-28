@@ -1,4 +1,4 @@
-package Models.Agents;
+package Models.Agents.Vehicles;
 
 import jade.core.Agent;
 import javafx.util.Pair;
