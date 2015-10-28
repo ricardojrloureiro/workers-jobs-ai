@@ -40,4 +40,35 @@
         </product>
 
     </products>
+
+    <points_of_interest_products>
+        <point_of_interest id="6">
+            <product id="4" quantity="78" />
+            <product id="5" quantity="129" />
+            <product id="6" quantity="200" />
+            <product id="1" quantity="490" />
+        </point_of_interest>
+
+
+        <point_of_interest id="7">
+            <product id="4" quantity="100" />
+            <product id="2" quantity="30" />
+            <product id="3" quantity="50" />
+            <product id="1" quantity="100" />
+            <product id="6" quantity="20" />
+        </point_of_interest>
+
+
+        <point_of_interest id="4">
+            <product id="1" quantity="10" />
+            <product id="2" quantity="10" />
+            <product id="3" quantity="10" />
+        </point_of_interest>
+
+        <point_of_interest id="5">
+            <product id="4" quantity="7" />
+            <product id="5" quantity="21" />
+            <product id="6" quantity="12" />
+        </point_of_interest>
+    </points_of_interest_products>
 </root>
