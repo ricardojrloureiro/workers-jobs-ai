@@ -1,0 +1,124 @@
+<?xml version="1.0"?>
+<root>
+
+    <locations>
+
+        <points_of_interest>
+            <!--- BATTERY STATIONS -->
+            <point_of_interest id="1" type="battery_station">
+                <name>GALP</name>
+                <charge_per_minute>100</charge_per_minute>
+                <position>
+                    <y>49.610710</y>
+                    <x>-105.117188</x>
+                </position>
+            </point_of_interest>
+
+            <point_of_interest id="2" type="battery_station">
+                <name>Prio</name>
+                <charge_per_minute>77</charge_per_minute>
+                <position>
+                    <y>-3.162456</y>
+                    <x>-89.296875</x>
+                </position>
+            </point_of_interest>
+
+            <point_of_interest id="3" type="battery_station">
+                <name>Repsol</name>
+                <charge_per_minute>89</charge_per_minute>
+                <position>
+                    <y>57.136239</y>
+                    <x>63.281250</x>
+                </position>
+            </point_of_interest>
+
+
+            <!--- STORES -->
+            <point_of_interest id="4" type="store">
+                <name>Continente</name>
+                <position>
+                    <y>8.754795</y>
+                    <x>26.367188</x>
+                </position>
+                <products_list>
+                    <product id="1" quantity="10" />
+                    <product id="2" quantity="10" />
+                    <product id="3" quantity="10" />
+                </products_list>
+            </point_of_interest>
+
+            <point_of_interest id="5" type="store">
+                <name>Apple</name>
+                <position>
+                    <y>-39.909736</y>
+                    <x>142.734375</x>
+                </position>
+                <products_list>
+                    <product id="4" quantity="7" />
+                    <product id="5" quantity="21" />
+                    <product id="6" quantity="12" />
+                </products_list>
+            </point_of_interest>
+
+
+
+            <!--- WAREHOUSES -->
+            <point_of_interest id="6" type="warehouse">
+                <name>World WareHouse</name>
+                <position>
+                    <y>-47.989922</y>
+                    <x>-152.578125</x>
+                </position>
+                <max_weight>850</max_weight>
+                <products_list>
+                    <product id="4" quantity="78" />
+                    <product id="5" quantity="129" />
+                    <product id="6" quantity="200" />
+                    <product id="1" quantity="490" />
+                </products_list>
+            </point_of_interest>
+
+            <point_of_interest id="7" type="warehouse">
+                <name>Mini WareHouse</name>
+                <position>
+                    <y>57.704147</y>
+                    <x>-23.554688</x>
+                </position>
+                <max_weight>300</max_weight>
+                <products_list>
+                    <product id="4" quantity="100" />
+                    <product id="2" quantity="30" />
+                    <product id="3" quantity="50" />
+                    <product id="1" quantity="100" />
+                    <product id="6" quantity="20" />
+                </products_list>
+            </point_of_interest>
+        </points_of_interest>
+
+        <no_interest_locations>
+            <location id="8" y="36.315125" x="-159.960938" />
+            <location id="9" y="-18.312811" x="-49.570313" />
+            <location id="10" y="12.211180" x="86.835938" />
+            <location id="11" y="45.336702" x="161.367188" />
+        </no_interest_locations>
+
+    </locations>
+
+    <connections>
+        <connection id1="1" id2="2" />
+        <connection id1="1" id2="8" />
+        <connection id1="2" id2="7" />
+        <connection id1="2" id2="9" />
+        <connection id1="8" id2="6" />
+        <connection id1="7" id2="4" />
+        <connection id1="9" id2="4" />
+        <connection id1="7" id2="3" />
+        <connection id1="4" id2="3" />
+        <connection id1="4" id2="10" />
+        <connection id1="10" id2="11" />
+        <connection id1="11" id2="3" />
+        <connection id1="5" id2="10" />
+        <connection id1="5" id2="9" />
+    </connections>
+
+</root>
