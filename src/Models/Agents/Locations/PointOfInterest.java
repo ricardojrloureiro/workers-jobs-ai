@@ -6,6 +6,10 @@ import javafx.util.Pair;
 public class PointOfInterest extends Location {
     private String name;
 
+    public PointOfInterest() {
+        super();
+    }
+
     public PointOfInterest(int id, String name)
     {
         super(id, new Pair<>(0.0f,0.0f));

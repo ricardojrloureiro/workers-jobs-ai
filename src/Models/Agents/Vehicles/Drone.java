@@ -37,6 +37,9 @@ public class Drone extends Vehicle {
         public void action() {
             ACLMessage msg = blockingReceive();
             if (msg.getPerformative() == ACLMessage.INFORM) {
+                Drone d = (Drone) this.getAgent();
+                System.out.println(d.getmMap().shortestPath(1,3));
+                /*
                 System.out.println(++n + " " + getLocalName() + ": recebi " + msg.getContent());
                 // cria resposta
                 ACLMessage reply = msg.createReply();
@@ -46,6 +49,7 @@ public class Drone extends Vehicle {
                 else reply.setContent("ping");
                 // envia mensagem
                 send(reply);
+                */
             }
 
         }
@@ -60,6 +64,7 @@ public class Drone extends Vehicle {
 
     // método setup
     protected void setup() {
+        this.setMap(getContainerController());
         System.out.println(this.getmMap());
 
         String tipo = "";

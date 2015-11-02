@@ -2,6 +2,7 @@ package Models.Agents.Vehicles;
 
 import Models.Map;
 import jade.core.Agent;
+import jade.wrapper.AgentContainer;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -30,12 +31,14 @@ public class Vehicle extends Agent {
         this.mMovementType = mMovementType;
         this.mCurrentPosition = mCurrentPosition;
         this.mTools = mTools;
-        // Load the map
-        this.mMap = Map.getMap();
     }
 
     public Map getmMap() {
         return this.mMap;
+    }
+
+    public void setMap(AgentContainer ac) {
+        this.mMap = Map.getMap(ac);
     }
 
 }
