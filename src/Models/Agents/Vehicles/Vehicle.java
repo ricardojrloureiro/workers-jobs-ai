@@ -1,5 +1,6 @@
 package Models.Agents.Vehicles;
 
+import Models.Map;
 import jade.core.Agent;
 import javafx.util.Pair;
 
@@ -19,6 +20,8 @@ public class Vehicle extends Agent {
 
     private ArrayList<Integer> mTools;
 
+    private Map mMap;
+
 
     public Vehicle(int mSpeed, int mBateryCharge, int mLoadCapacity, int mMovementType, Pair<Float, Float> mCurrentPosition, ArrayList<Integer> mTools) {
         this.mSpeed = mSpeed;
@@ -27,6 +30,12 @@ public class Vehicle extends Agent {
         this.mMovementType = mMovementType;
         this.mCurrentPosition = mCurrentPosition;
         this.mTools = mTools;
+        // Load the map
+        this.mMap = Map.getMap();
+    }
+
+    public Map getmMap() {
+        return this.mMap;
     }
 
 }

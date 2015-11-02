@@ -14,7 +14,6 @@ import java.util.ArrayList;
 
 public class Drone extends Vehicle {
 
-
     private static ArrayList<Integer> generateToolsArray()
     {
         ArrayList<Integer> tools = new ArrayList<>();
@@ -26,7 +25,6 @@ public class Drone extends Vehicle {
     public Drone() {
         super(5, 250, 100, Vehicle.AIR, new Pair<>(0.0f, 0.0f), Drone.generateToolsArray());
     }
-
 
     private class PingPongBehaviour extends SimpleBehaviour {
         private int n = 0;
@@ -62,6 +60,8 @@ public class Drone extends Vehicle {
 
     // método setup
     protected void setup() {
+        System.out.println(this.getmMap());
+
         String tipo = "";
         // obtém argumentos
         Object[] args = getArguments();

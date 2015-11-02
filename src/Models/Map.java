@@ -23,19 +23,23 @@ import java.util.stream.Stream;
 
 public class Map {
 
-    private UndirectedGraph<Location,DistanceEdge> map;
+    private static Map ref;
+    private UndirectedGraph<Location,DistanceEdge> graph;
 
-    public Map() {
-        this.map = new SimpleGraph<>(DistanceEdge.class);
-    }
-
-    public static void main(String[] args) {
-        Map map = new Map();
+    private Map() {
+        this.graph = new SimpleGraph<>(DistanceEdge.class);
         try {
-            map.parse("src/POI.xml");
+            parse("src/POI.xml");
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Map getMap() {
+        if (ref == null)
+            // it's ok, we can call this constructor
+            ref = new Map();
+        return ref;
     }
 
     private static class DistanceEdge extends DefaultEdge {
@@ -61,13 +65,8 @@ public class Map {
             parseLocations(rootEle);
             parseConections(rootEle);
 
-            System.out.println(map);
-            Stream<Location> matchesId1 =  map.vertexSet().stream().filter(l -> l.getId() == 1);
-            Stream<Location> matchesId2 =  map.vertexSet().stream().filter(l -> l.getId() == 6);
-
-            Location l1 = matchesId1.findFirst().get();
-            Location l2 = matchesId2.findFirst().get();
-            System.out.println(DijkstraShortestPath.findPathBetween(map, l1, l2));
+            //System.out.println(graph);
+            //System.out.println(DijkstraShortestPath.findPathBetween(graph, getLocationFromId(1), getLocationFromId(6)));
 
         } catch (SAXException e) {
             e.printStackTrace();
@@ -86,25 +85,20 @@ public class Map {
             int id1 = Integer.parseInt(connection.getAttribute("id1"));
             int id2 = Integer.parseInt(connection.getAttribute("id2"));
 
-
-            Stream<Location> matchesId1 =  map.vertexSet().stream().filter(l -> l.getId() == id1);
-            Stream<Location> matchesId2 =  map.vertexSet().stream().filter(l -> l.getId() == id2);
-
-            Location l1 = matchesId1.findFirst().get();
-            Location l2 = matchesId2.findFirst().get();
+            Location l1 = getLocationFromId(id1);
+            Location l2 = getLocationFromId(id2);
 
             float distance = (float) Math.sqrt((l1.getPosition().getKey()-l2.getPosition().getKey())*(l1.getPosition().getKey()-l2.getPosition().getKey()) + (l1.getPosition().getValue()-l2.getPosition().getValue())*(l1.getPosition().getValue()-l2.getPosition().getValue()));
 
             System.out.println(distance);
 
-            map.addEdge(l1,l2,new DistanceEdge(distance));
+            graph.addEdge(l1, l2, new DistanceEdge(distance));
 
         }
 
     }
 
-    private BatteryStation getBatteryStation(Element POI)
-    {
+    private BatteryStation getBatteryStation(Element POI) {
         int id = Integer.parseInt(POI.getAttribute("id"));
         float chargePerMinute = getFloatValue(POI, "charge_per_minute");
         String name = getTextValue(POI, "name");
@@ -149,15 +143,15 @@ public class Map {
             switch (type) {
                 case BatteryStation.BATTERYSTATION_TYPE:
                     BatteryStation batteryStation = getBatteryStation(POI);
-                    map.addVertex(batteryStation);
+                    graph.addVertex(batteryStation);
                     break;
                 case Store.STORE_TYPE:
                     Store store = getStore(POI);
-                    map.addVertex(store);
+                    graph.addVertex(store);
                    break;
                 case Warehouse.WAREHOUSE_TYPE:
                     Warehouse warehouse = getWarehouse(POI);
-                    map.addVertex(warehouse);
+                    graph.addVertex(warehouse);
                     break;
                 default:
                     break;
@@ -171,7 +165,7 @@ public class Map {
 
         Element pointsNoInterestElement = (Element) pointsNoInterest.item(0);
         NodeList locations = pointsNoInterestElement.getElementsByTagName("location");
-        System.out.println(map.vertexSet().size());
+        System.out.println(graph.vertexSet().size());
 
         for(int i = 0; i<locations.getLength(); i++) {
             Element POI = (Element) locations.item(i);
@@ -180,10 +174,10 @@ public class Map {
             float yValue = Float.parseFloat(POI.getAttribute("y"));
             Location location = new Location(id,new Pair<>(xValue,yValue));
 
-            map.addVertex(location);
+            graph.addVertex(location);
         }
 
-        System.out.println(map.vertexSet().size());
+        System.out.println(graph.vertexSet().size());
 
 
     }
@@ -197,7 +191,7 @@ public class Map {
         float yValue = getFloatValue(POI, "y");
 
         Store store = new Store(id,name);
-        store.setPosition(new Pair<>(xValue,yValue));
+        store.setPosition(new Pair<>(xValue, yValue));
 
         return store;
     }
@@ -206,7 +200,7 @@ public class Map {
 
         int id = Integer.parseInt(POI.getAttribute("id"));
         String name = getTextValue(POI, "name");
-        float maxWeight = getFloatValue(POI,"max_weight");
+        float maxWeight = getFloatValue(POI, "max_weight");
 
         float xValue = getFloatValue(POI, "x");
         float yValue = getFloatValue(POI, "y");
@@ -215,6 +209,16 @@ public class Map {
         warehouse.setPosition(new Pair<>(xValue,yValue));
 
         return warehouse;
+    }
+
+    private Location getLocationFromId(int id) {
+        Stream<Location> matchesId1 =  graph.vertexSet().stream().filter(l -> l.getId() == id);
+        return matchesId1.findFirst().get();
+    }
+
+    @Override
+    public String toString() {
+        return this.graph.toString();
     }
 
 
