@@ -17,7 +17,7 @@ public class Store extends PointOfInterest {
     public static final String STORE_TYPE = "store";
 
 
-    private ArrayList< HashMap<Product, Integer> > products;
+    private HashMap<Product,Integer> products = new HashMap<>();
 
     public Store() {
         super();
@@ -31,9 +31,11 @@ public class Store extends PointOfInterest {
 
     public void addProduct(Product product, int quantity)
     {
-        HashMap<Product, Integer> hm = new HashMap<>();
-        hm.put(product, quantity);
-        products.add(hm);
+        products.put(product,quantity);
+    }
+
+    public HashMap<Product, Integer> getProducts() {
+        return products;
     }
 
     // TODO: check for needed products
@@ -56,6 +58,12 @@ public class Store extends PointOfInterest {
             if (msg.getPerformative() == ACLMessage.INFORM) {
                 Store s = (Store) this.getAgent();
                 System.out.println("SOU A Store " + s.getPOIName() + " " + s.getPosition());
+
+                for (java.util.Map.Entry<Product, Integer> entry : s.getProducts().entrySet()) {
+                    System.out.println("Produto: " + entry.getKey().getName());
+                    System.out.println("Quantidade: " + entry.getValue());
+                }
+
             }
 
         }
@@ -77,6 +85,16 @@ public class Store extends PointOfInterest {
             this.setId((Integer) args[0]);
             this.setName((String) args[1]);
             this.setPosition((Pair<Float, Float>) args[2]);
+
+            HashMap<Product,Integer> productsToAdd = (HashMap<Product,Integer>) args[3];
+
+            if(productsToAdd.size() != 0) {
+                for (java.util.Map.Entry<Product, Integer> entry : productsToAdd.entrySet()) {
+                    this.addProduct(entry.getKey(), entry.getValue());
+                }
+            }
+
+
         } else {
             System.out.println("Não especificou o tipo");
         }

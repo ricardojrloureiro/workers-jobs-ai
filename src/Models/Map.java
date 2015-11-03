@@ -21,6 +21,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -28,10 +30,15 @@ public class Map {
 
     private static Map ref;
     private UndirectedGraph<Location,DistanceEdge> graph;
+    private ArrayList<Product> products_list;
+    private HashMap<Integer,HashMap<Integer,Integer>> poi_products;
 
     private Map(AgentContainer ac) {
         this.graph = new SimpleGraph<>(DistanceEdge.class);
+        this.products_list = new ArrayList<>();
+        this.poi_products = new HashMap<>();
         try {
+            parseProduts("src/Products.xml");
             parse("src/POI.xml",ac);
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
@@ -62,6 +69,72 @@ public class Map {
        return DijkstraShortestPath.findPathBetween(graph,getLocationFromId(idLoc1),getLocationFromId(idLoc2));
     }
 
+    private void parseProduts(String filepath) throws ParserConfigurationException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+
+        try {
+            Document doc = db.parse(new File(filepath));
+
+            Element rootEle = doc.getDocumentElement();
+            parseProdutsList(rootEle);
+            parseProdutsConnections(rootEle);
+
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void parseProdutsConnections(Element rootEle) {
+        NodeList points = rootEle.getElementsByTagName("point_of_interest");
+
+        for(int i = 0; i < points.getLength(); i++) {
+            Element point = (Element) points.item(i);
+
+            int idPoint = Integer.parseInt(point.getAttribute("id"));
+
+            NodeList connections = point.getElementsByTagName("product");
+
+            HashMap<Integer,Integer> prod = new HashMap<>();
+
+            for(int j = 0; j < connections.getLength(); j++) {
+                Element connection = (Element) connections.item(j);
+
+                int idProduct = Integer.parseInt(connection.getAttribute("id"));
+                int quantity = Integer.parseInt(connection.getAttribute("quantity"));
+
+                prod.put(idProduct,quantity);
+
+            }
+
+            poi_products.put(idPoint,prod);
+        }
+
+    }
+
+    private void parseProdutsList(Element rootEle) {
+        NodeList products_node_list = rootEle.getElementsByTagName("products");
+        Element products_elem = (Element) products_node_list.item(0);
+        NodeList products = products_elem.getElementsByTagName("product");
+
+        for(int i = 0; i < products.getLength(); i++) {
+            Element product = (Element) products.item(i);
+
+            String name = getTextValue(product, "name");
+            int weight = getIntValue(product, "weight");
+            int time_to_produce = getIntValue(product,"time_to_produce");
+
+
+            Product p = new Product(name,weight);
+            p.setTimeRequiredToProduce(time_to_produce);
+
+            products_list.add(p);
+
+        }
+    }
+
     private void parse (String filepath, AgentContainer ac) throws ParserConfigurationException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
@@ -75,9 +148,6 @@ public class Map {
                 e.printStackTrace();
             }
             parseConections(rootEle);
-
-            //System.out.println(graph);
-            //System.out.println(DijkstraShortestPath.findPathBetween(graph, getLocationFromId(1), getLocationFromId(6)));
 
         } catch (SAXException e) {
             e.printStackTrace();
@@ -162,7 +232,6 @@ public class Map {
             Element POI = (Element) pointsOfInterest.item(i);
             String type = POI.getAttribute("type");
 
-
             switch (type) {
                 case BatteryStation.BATTERYSTATION_TYPE:
                     BatteryStation batteryStation = getBatteryStation(POI,ac);
@@ -213,10 +282,20 @@ public class Map {
         Store store = new Store(id,name);
         store.setPosition(new Pair<>(xValue, yValue));
 
-        Object[] args = new Object[3];
+        HashMap<Integer,Integer> productsQuantity = poi_products.get(id);
+        HashMap<Product,Integer> productsToAdd = new HashMap<>();
+
+        for (java.util.Map.Entry<Integer, Integer> entry : productsQuantity.entrySet()) {
+            productsToAdd.put(products_list.get(entry.getKey() - 1), entry.getValue());
+        }
+
+
+
+        Object[] args = new Object[4];
         args[0] = id;
         args[1] = name;
         args[2] = new Pair<>(xValue,yValue);
+        args[3] = productsToAdd;
 
         try {
             AgentController aController = ac.createNewAgent(name,Store.class.getName(),args);
@@ -240,11 +319,21 @@ public class Map {
         Warehouse warehouse = new Warehouse(id,name,maxWeight);
         warehouse.setPosition(new Pair<>(xValue,yValue));
 
-        Object[] args = new Object[4];
+        HashMap<Integer,Integer> productsQuantity = poi_products.get(id);
+        HashMap<Product,Integer> productsToAdd = new HashMap<>();
+
+        for (java.util.Map.Entry<Integer, Integer> entry : productsQuantity.entrySet()) {
+            productsToAdd.put(products_list.get(entry.getKey() - 1),entry.getValue());
+        }
+
+
+        Object[] args = new Object[5];
         args[0] = id;
         args[1] = name;
         args[2] = maxWeight;
         args[3] = new Pair<>(xValue,yValue);
+        args[4] = productsToAdd;
+
 
         try {
             AgentController aController = ac.createNewAgent(name,Warehouse.class.getName(),args);

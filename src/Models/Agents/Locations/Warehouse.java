@@ -19,7 +19,7 @@ public class Warehouse extends PointOfInterest {
     public static final String WAREHOUSE_TYPE = "warehouse";
 
     private float maxWeight;
-    private ArrayList< HashMap<Product, Integer> > products;
+    private HashMap<Product,Integer> products = new HashMap<>();
 
     public Warehouse() {
         super();
@@ -33,9 +33,11 @@ public class Warehouse extends PointOfInterest {
 
     public void addProduct(Product product, int quantity)
     {
-        HashMap<Product, Integer> hm = new HashMap<>();
-        hm.put(product, quantity);
-        products.add(hm);
+        products.put(product, quantity);
+    }
+
+    public HashMap<Product, Integer> getProducts() {
+        return products;
     }
 
     public float getMaxWeight() {
@@ -66,6 +68,11 @@ public class Warehouse extends PointOfInterest {
             if (msg.getPerformative() == ACLMessage.INFORM) {
                 Warehouse w = (Warehouse) this.getAgent();
                 System.out.println("SOU A Warehouse " + w.getPOIName() + " " + w.getMaxWeight() + " " + w.getPosition());
+
+                for (java.util.Map.Entry<Product, Integer> entry : w.getProducts().entrySet()) {
+                    System.out.println("Produto: " + entry.getKey().getName());
+                    System.out.println("Quantidade: " + entry.getValue());
+                }
             }
 
         }
@@ -88,6 +95,15 @@ public class Warehouse extends PointOfInterest {
             this.setName((String) args[1]);
             this.setMaxWeight((Float) args[2]);
             this.setPosition((Pair<Float, Float>) args[3]);
+
+            HashMap<Product,Integer> productsToAdd = (HashMap<Product,Integer>) args[4];
+
+            if(productsToAdd.size() != 0) {
+                for (java.util.Map.Entry<Product, Integer> entry : productsToAdd.entrySet()) {
+                    this.addProduct(entry.getKey(), entry.getValue());
+                }
+            }
+
         } else {
             System.out.println("Não especificou o tipo");
         }
