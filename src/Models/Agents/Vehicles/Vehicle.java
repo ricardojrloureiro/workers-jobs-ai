@@ -17,20 +17,69 @@ public class Vehicle extends Agent {
     private int mLoadCapacity;
     private int mMovementType;
 
-    private Pair<Float, Float> mCurrentPosition;
+    private Pair<Float, Float> mCurrentPosition = new Pair<>(0.0f,0.0f);
 
-    private ArrayList<Integer> mTools;
+    private ArrayList<Integer> mTools = new ArrayList<>();
 
     private Map mMap;
 
 
-    public Vehicle(int mSpeed, int mBateryCharge, int mLoadCapacity, int mMovementType, Pair<Float, Float> mCurrentPosition, ArrayList<Integer> mTools) {
-        this.mSpeed = mSpeed;
-        this.mBateryCharge = mBateryCharge;
-        this.mLoadCapacity = mLoadCapacity;
-        this.mMovementType = mMovementType;
-        this.mCurrentPosition = mCurrentPosition;
-        this.mTools = mTools;
+    //public Vehicle(int mSpeed, int mBateryCharge, int mLoadCapacity, int mMovementType, Pair<Float, Float> mCurrentPosition, ArrayList<Integer> mTools) {
+    //    this.mSpeed = mSpeed;
+    //    this.mBateryCharge = mBateryCharge;
+    //    this.mLoadCapacity = mLoadCapacity;
+    //    this.mMovementType = mMovementType;
+    //    this.mCurrentPosition = mCurrentPosition;
+    //    this.mTools = mTools;
+    //}
+
+
+    public void setSpeed(int speed) {
+        this.mSpeed = speed;
+    }
+
+    public int getSpeed() {
+        return mSpeed;
+    }
+
+    public void setBatteryCharge(int batteryCharge) {
+        this.mBateryCharge = batteryCharge;
+    }
+
+    public int getBateryCharge() {
+        return mBateryCharge;
+    }
+
+    public void setLoadCapacity(int loadCapacity) {
+        this.mLoadCapacity = loadCapacity;
+    }
+
+    public int getLoadCapacity() {
+        return mLoadCapacity;
+    }
+
+    public void setMovementType(int movementType) {
+        this.mMovementType = movementType;
+    }
+
+    public int getMovementType() {
+        return mMovementType;
+    }
+
+    public void setCurrentPosition(Pair<Float, Float> position) {
+        this.mCurrentPosition = position;
+    }
+
+    public Pair<Float,Float> getCurrentPosition() {
+        return mCurrentPosition;
+    }
+
+    public void setTools(ArrayList<Integer> tools) {
+        this.mTools = tools;
+    }
+
+    public ArrayList<Integer> getTools() {
+        return mTools;
     }
 
     public Map getmMap() {

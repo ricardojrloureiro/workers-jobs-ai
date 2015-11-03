@@ -22,34 +22,23 @@ public class Drone extends Vehicle {
         return tools;
     }
 
-    public Drone() {
-        super(5, 250, 100, Vehicle.AIR, new Pair<>(0.0f, 0.0f), Drone.generateToolsArray());
-    }
+    //public Drone() {
+    //    super(5, 250, 100, Vehicle.AIR, new Pair<>(0.0f, 0.0f), Drone.generateToolsArray());
+    //}
 
-    private class PingPongBehaviour extends SimpleBehaviour {
+    private class DroneBehaviour extends SimpleBehaviour {
         private int n = 0;
 
         // construtor do behaviour
-        public PingPongBehaviour(Agent a) {
+        public DroneBehaviour(Agent a) {
             super(a);
         }
 
         public void action() {
             ACLMessage msg = blockingReceive();
             if (msg.getPerformative() == ACLMessage.INFORM) {
-                Drone d = (Drone) this.getAgent();
-                System.out.println(d.getmMap().shortestPath(1,3));
-                /*
-                System.out.println(++n + " " + getLocalName() + ": recebi " + msg.getContent());
-                // cria resposta
-                ACLMessage reply = msg.createReply();
-                // preenche conteúdo da mensagem
-                if (msg.getContent().equals("ping"))
-                    reply.setContent("pong");
-                else reply.setContent("ping");
-                // envia mensagem
-                send(reply);
-                */
+                //Drone d = (Drone) this.getAgent();
+                //System.out.println(d.getmMap().shortestPath(1,3));
             }
 
         }
@@ -65,23 +54,20 @@ public class Drone extends Vehicle {
     // método setup
     protected void setup() {
         this.setMap(getContainerController());
-        System.out.println(this.getmMap());
+        this.setSpeed(5);
+        this.setBatteryCharge(250);
+        this.setLoadCapacity(100);
+        this.setMovementType(Vehicle.AIR);
+        this.setCurrentPosition(new Pair<>(0.0f, 0.0f));
+        this.setTools(Drone.generateToolsArray());
 
-        String tipo = "";
-        // obtém argumentos
-        Object[] args = getArguments();
-        if (args != null && args.length > 0) {
-            tipo = (String) args[0];
-        } else {
-            System.out.println("Não especificou o tipo");
-        }
 
         // regista agente no DF
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
         sd.setName(getName());
-        sd.setType("Agente " + tipo);
+        sd.setType("Drone");
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);
@@ -90,26 +76,9 @@ public class Drone extends Vehicle {
         }
 
         // cria behaviour
-        PingPongBehaviour b = new PingPongBehaviour(this);
+        DroneBehaviour b = new DroneBehaviour(this);
         addBehaviour(b);
 
-        // toma a iniciativa se for agente "pong"
-        if(tipo.equals("pong")) {
-            // pesquisa DF por agentes "ping"
-            DFAgentDescription template = new DFAgentDescription();
-            ServiceDescription sd1 = new ServiceDescription();
-            sd1.setType("Agente ping");
-            template.addServices(sd1);
-            try {
-                DFAgentDescription[] result = DFService.search(this, template);
-                // envia mensagem "pong" inicial a todos os agentes "ping"
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                for(int i=0; i<result.length; ++i)
-                    msg.addReceiver(result[i].getName());
-                msg.setContent("pong");
-                send(msg);
-            } catch(FIPAException e) { e.printStackTrace(); }
-        }
 
     }
 
