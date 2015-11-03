@@ -39,31 +39,19 @@ public class BatteryStation extends PointOfInterest {
      * Agent functions
      */
 
-    private class PingPongBehaviour extends SimpleBehaviour {
+    private class BatteryStationBehaviour extends SimpleBehaviour {
         private int n = 0;
 
         // construtor do behaviour
-        public PingPongBehaviour(Agent a) {
+        public BatteryStationBehaviour(Agent a) {
             super(a);
         }
 
         public void action() {
-            System.out.println("AQUI");
             ACLMessage msg = blockingReceive();
             if (msg.getPerformative() == ACLMessage.INFORM) {
                 BatteryStation b = (BatteryStation) this.getAgent();
-                System.out.println("YO SOU A BOMBA " + b.getPOIName() + " " + b.getChargePerMinute());
-
-                /*
-                // cria resposta
-                ACLMessage reply = msg.createReply();
-                // preenche conteúdo da mensagem
-                if (msg.getContent().equals("ping"))
-                    reply.setContent("pong");
-                else reply.setContent("ping");
-                // envia mensagem
-                send(reply);
-                */
+                System.out.println("SOU A BOMBA " + b.getPOIName() + " " + b.getChargePerMinute() + " " + b.getPosition());
             }
 
         }
@@ -78,9 +66,7 @@ public class BatteryStation extends PointOfInterest {
 
     // método setup
     protected void setup() {
-        System.out.println("A CRIAR BATTERY STATION");
 
-        String tipo = "";
         // obtém argumentos
         Object[] args = getArguments();
         if (args != null && args.length > 0) {
@@ -97,7 +83,7 @@ public class BatteryStation extends PointOfInterest {
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
         sd.setName(getName());
-        sd.setType("Agente " + tipo);
+        sd.setType("BatteryStation");
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);
@@ -106,27 +92,8 @@ public class BatteryStation extends PointOfInterest {
         }
 
         // cria behaviour
-        PingPongBehaviour b = new PingPongBehaviour(this);
+        BatteryStationBehaviour b = new BatteryStationBehaviour(this);
         addBehaviour(b);
-        /*
-        // toma a iniciativa se for agente "pong"
-        if(tipo.equals("pong")) {
-            // pesquisa DF por agentes "ping"
-            DFAgentDescription template = new DFAgentDescription();
-            ServiceDescription sd1 = new ServiceDescription();
-            sd1.setType("Agente ping");
-            template.addServices(sd1);
-            try {
-                DFAgentDescription[] result = DFService.search(this, template);
-                // envia mensagem "pong" inicial a todos os agentes "ping"
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-                for(int i=0; i<result.length; ++i)
-                    msg.addReceiver(result[i].getName());
-                msg.setContent("pong");
-                send(msg);
-            } catch(FIPAException e) { e.printStackTrace(); }
-        }
-        */
 
     }
 

@@ -1,9 +1,5 @@
 package Models;
 
-import jade.core.Runtime;
-import jade.core.Profile;
-import jade.core.ProfileImpl;
-
 import jade.wrapper.*;
 
 import Models.Agents.Locations.BatteryStation;
@@ -135,8 +131,6 @@ public class Map {
             e.printStackTrace();
         }
 
-
-
         return batteryStation;
 
     }
@@ -175,11 +169,11 @@ public class Map {
                     graph.addVertex(batteryStation);
                     break;
                 case Store.STORE_TYPE:
-                    Store store = getStore(POI);
+                    Store store = getStore(POI, ac);
                     graph.addVertex(store);
                    break;
                 case Warehouse.WAREHOUSE_TYPE:
-                    Warehouse warehouse = getWarehouse(POI);
+                    Warehouse warehouse = getWarehouse(POI, ac);
                     graph.addVertex(warehouse);
                     break;
                 default:
@@ -208,7 +202,7 @@ public class Map {
 
     }
 
-    private Store getStore(Element POI) {
+    private Store getStore(Element POI, AgentContainer ac) {
 
         int id = Integer.parseInt(POI.getAttribute("id"));
         String name = getTextValue(POI, "name");
@@ -219,10 +213,22 @@ public class Map {
         Store store = new Store(id,name);
         store.setPosition(new Pair<>(xValue, yValue));
 
+        Object[] args = new Object[3];
+        args[0] = id;
+        args[1] = name;
+        args[2] = new Pair<>(xValue,yValue);
+
+        try {
+            AgentController aController = ac.createNewAgent(name,Store.class.getName(),args);
+            aController.start();
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
+
         return store;
     }
 
-    private Warehouse getWarehouse(Element POI) {
+    private Warehouse getWarehouse(Element POI, AgentContainer ac) {
 
         int id = Integer.parseInt(POI.getAttribute("id"));
         String name = getTextValue(POI, "name");
@@ -233,6 +239,19 @@ public class Map {
 
         Warehouse warehouse = new Warehouse(id,name,maxWeight);
         warehouse.setPosition(new Pair<>(xValue,yValue));
+
+        Object[] args = new Object[4];
+        args[0] = id;
+        args[1] = name;
+        args[2] = maxWeight;
+        args[3] = new Pair<>(xValue,yValue);
+
+        try {
+            AgentController aController = ac.createNewAgent(name,Warehouse.class.getName(),args);
+            aController.start();
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
 
         return warehouse;
     }
