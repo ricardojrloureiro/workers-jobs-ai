@@ -1,5 +1,6 @@
 package Models;
 
+import Models.Agents.JobContractor;
 import jade.wrapper.*;
 
 import Models.Agents.Locations.BatteryStation;
@@ -40,6 +41,14 @@ public class Map {
         try {
             parseProduts("src/Products.xml");
             parse("src/POI.xml",ac);
+
+            try {
+                AgentController aController = ac.createNewAgent("Contractor",JobContractor.class.getName(),null);
+                aController.start();
+            } catch (StaleProxyException e) {
+                e.printStackTrace();
+            }
+
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }

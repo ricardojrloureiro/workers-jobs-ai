@@ -77,7 +77,7 @@ public class Warehouse extends PointOfInterest {
 
         }
 
-        // método done
+        // mï¿½todo done
         public boolean done() {
             return n==10;
         }
@@ -85,10 +85,10 @@ public class Warehouse extends PointOfInterest {
     }
 
 
-    // método setup
+    // mï¿½todo setup
     protected void setup() {
 
-        // obtém argumentos
+        // obtï¿½m argumentos
         Object[] args = getArguments();
         if (args != null && args.length > 0) {
             this.setId((Integer) args[0]);
@@ -105,7 +105,6 @@ public class Warehouse extends PointOfInterest {
             }
 
         } else {
-            System.out.println("Não especificou o tipo");
         }
 
         // regista agente no DF
@@ -127,7 +126,7 @@ public class Warehouse extends PointOfInterest {
 
     }
 
-    // método takeDown
+    // mï¿½todo takeDown
     protected void takeDown() {
         // retira registo no DF
         try {

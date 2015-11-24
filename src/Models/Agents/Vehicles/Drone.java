@@ -1,5 +1,6 @@
 package Models.Agents.Vehicles;
 
+import Models.Agents.JobContractor;
 import Models.Tool;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
@@ -8,6 +9,8 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import jade.wrapper.AgentController;
+import jade.wrapper.StaleProxyException;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -67,7 +70,7 @@ public class Drone extends Vehicle {
         dfd.setName(getAID());
         ServiceDescription sd = new ServiceDescription();
         sd.setName(getName());
-        sd.setType("Drone");
+        sd.setType("Vehicle");
         dfd.addServices(sd);
         try {
             DFService.register(this, dfd);
@@ -76,9 +79,16 @@ public class Drone extends Vehicle {
         }
 
         // cria behaviour
-        DroneBehaviour b = new DroneBehaviour(this);
+        VehicleBehaviour b = new VehicleBehaviour(this);
         addBehaviour(b);
 
+
+        try {
+            AgentController aController = getContainerController().createNewAgent("Carro fixe",Car.class.getName(),null);
+            aController.start();
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
 
     }
 

@@ -4,7 +4,8 @@ public class FixedPriceJob extends Job {
 
     private float price;
 
-    public FixedPriceJob(int timeToComplete) {
-        super(timeToComplete);
+    public FixedPriceJob(int price, int[] requiredTools, int timeToComplete) {
+        super(timeToComplete,requiredTools);
+        this.price = price;
     }
 }

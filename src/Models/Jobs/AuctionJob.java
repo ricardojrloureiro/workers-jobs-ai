@@ -4,7 +4,7 @@ public class AuctionJob extends Job {
 
     private float currentBid;
 
-    public AuctionJob(int timeToComplete) {
-        super(timeToComplete);
+    public AuctionJob(int timeToComplete, int[] requiredTools) {
+        super(timeToComplete, requiredTools);
     }
 }
