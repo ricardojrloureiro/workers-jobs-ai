@@ -24,37 +24,45 @@ public class VehicleBehaviour extends ContractNetResponder {
     protected ACLMessage prepareResponse(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
         try {
             System.out.println("Agent "+ getAgent().getLocalName()+": CFP received from "+cfp.getSender().getName()+". Action is "+cfp.getContentObject());
+
+            int proposal = ((Vehicle) getAgent()).evaluateAction((FixedPriceJob) cfp.getContentObject());
+            if (proposal > 0) {
+                // We provide a proposal
+                System.out.println("Agent "+getAgent().getLocalName()+": Proposing "+proposal);
+                ACLMessage propose = cfp.createReply();
+                propose.setPerformative(ACLMessage.PROPOSE);
+                propose.setContent(String.valueOf(proposal));
+                return propose;
+            }
+            else {
+                // We refuse to provide a proposal
+                System.out.println("Agent "+getAgent().getLocalName()+": Refuse");
+                throw new RefuseException("evaluation-failed");
+            }
+
         } catch (UnreadableException e) {
             e.printStackTrace();
         }
-        int proposal = ((Vehicle) getAgent()).evaluateAction();
-        if (proposal > 2) {
-            // We provide a proposal
-            System.out.println("Agent "+getAgent().getLocalName()+": Proposing "+proposal);
-            ACLMessage propose = cfp.createReply();
-            propose.setPerformative(ACLMessage.PROPOSE);
-            propose.setContent(String.valueOf(proposal));
-            return propose;
-        }
-        else {
-            // We refuse to provide a proposal
-            System.out.println("Agent "+getAgent().getLocalName()+": Refuse");
-            throw new RefuseException("evaluation-failed");
-        }
+        return null;
     }
 
     protected ACLMessage prepareResultNotification(ACLMessage cfp, ACLMessage propose,ACLMessage accept) throws FailureException {
         System.out.println("Agent "+getAgent().getLocalName()+": Proposal accepted");
-        if (((Vehicle) getAgent()).performAction()) {
-            System.out.println("Agent "+getAgent().getLocalName()+": Action successfully performed");
-            ACLMessage inform = accept.createReply();
-            inform.setPerformative(ACLMessage.INFORM);
-            return inform;
+        try {
+            if (((Vehicle) getAgent()).performAction((FixedPriceJob) cfp.getContentObject())) {
+                System.out.println("Agent "+getAgent().getLocalName()+": Action successfully performed");
+                ACLMessage inform = accept.createReply();
+                inform.setPerformative(ACLMessage.INFORM);
+                return inform;
+            }
+            else {
+                System.out.println("Agent "+getAgent().getLocalName()+": Action execution failed");
+                throw new FailureException("unexpected-error");
+            }
+        } catch (UnreadableException e) {
+            e.printStackTrace();
         }
-        else {
-            System.out.println("Agent "+getAgent().getLocalName()+": Action execution failed");
-            throw new FailureException("unexpected-error");
-        }
+        return null;
     }
 
     protected void handleRejectProposal(ACLMessage reject) {

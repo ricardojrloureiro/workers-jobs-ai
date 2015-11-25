@@ -95,6 +95,13 @@ public class Drone extends Vehicle {
             e.printStackTrace();
         }
 
+        try {
+            AgentController aController = getContainerController().createNewAgent("Contractor",JobContractor.class.getName(),null);
+            aController.start();
+        } catch (StaleProxyException e) {
+            e.printStackTrace();
+        }
+
     }
 
     // método takeDown

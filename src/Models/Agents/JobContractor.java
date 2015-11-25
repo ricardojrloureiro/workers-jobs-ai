@@ -2,6 +2,7 @@ package Models.Agents;
 
 import Models.Jobs.FixedPriceJob;
 import Models.Jobs.Job;
+import Models.Tool;
 import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
@@ -26,9 +27,9 @@ public class JobContractor extends Agent {
 
     // Default constructor
     public JobContractor() {
-        mJobList.add(new FixedPriceJob(10,new int[]{1,2},100));
-        mJobList.add(new FixedPriceJob(5,new int[]{1,2},100));
-        mJobList.add(new FixedPriceJob(20,new int[]{1,2},100));
+        mJobList.add(new FixedPriceJob(10,new int[]{Tool.f1,Tool.f2},100,8,new int[]{4}));
+        //mJobList.add(new FixedPriceJob(5,new int[]{1,2},100));
+        //mJobList.add(new FixedPriceJob(20,new int[]{1,2},100));
     }
 
     private class JobContractorBehaviour extends ContractNetInitiator {

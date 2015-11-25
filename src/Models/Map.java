@@ -44,14 +44,6 @@ public class Map {
             parse("src/POI.xml",ac);
 
 
-            try {
-                AgentController aController = ac.createNewAgent("Contractor",JobContractor.class.getName(),null);
-                aController.start();
-            } catch (StaleProxyException e) {
-                e.printStackTrace();
-            }
-
-
         } catch (ParserConfigurationException e) {
             e.printStackTrace();
         }

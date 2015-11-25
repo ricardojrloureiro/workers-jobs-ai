@@ -1,11 +1,13 @@
 package Models.Agents.Vehicles;
 
+import Models.Jobs.FixedPriceJob;
 import Models.Map;
 import jade.core.Agent;
 import jade.wrapper.AgentContainer;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Vehicle extends Agent {
 
@@ -22,17 +24,6 @@ public class Vehicle extends Agent {
     private ArrayList<Integer> mTools = new ArrayList<>();
 
     private Map mMap;
-
-
-    //public Vehicle(int mSpeed, int mBateryCharge, int mLoadCapacity, int mMovementType, Pair<Float, Float> mCurrentPosition, ArrayList<Integer> mTools) {
-    //    this.mSpeed = mSpeed;
-    //    this.mBateryCharge = mBateryCharge;
-    //    this.mLoadCapacity = mLoadCapacity;
-    //    this.mMovementType = mMovementType;
-    //    this.mCurrentPosition = mCurrentPosition;
-    //    this.mTools = mTools;
-    //}
-
 
     public void setSpeed(int speed) {
         this.mSpeed = speed;
@@ -90,11 +81,32 @@ public class Vehicle extends Agent {
         this.mMap = Map.getMap(ac);
     }
 
-    public int evaluateAction() {
-        return 3;
+    public int evaluateAction(FixedPriceJob job) {
+
+        boolean hasAllTools = true;
+
+        for(int i : job.getRequiredTools()) {
+            if(!mTools.contains(i))
+                hasAllTools = false;
+        }
+
+        if(hasAllTools) {
+            return 3;
+        }
+
+        return 1;
     }
 
-    public Boolean performAction() {
+    public Boolean performAction(FixedPriceJob job) {
+
+        System.out.println("DOING JOB");
+
+
+
+        System.out.println("Price: " + job.getPrice());
+        System.out.println("Products to make: " + Arrays.toString(job.getProductsToMake()));
+
+
         return true;
     }
 
