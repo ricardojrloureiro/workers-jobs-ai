@@ -57,6 +57,10 @@ public class Map {
         return ref;
     }
 
+    public Location getNearestBatteryStation(Location currentPosition) {
+        return currentPosition;
+    }
+
     private static class DistanceEdge extends DefaultEdge {
         private float mDistance;
 
@@ -350,17 +354,17 @@ public class Map {
         return warehouse;
     }
 
-    private Location getLocationFromId(int id) {
+    public Location getLocationFromId(int id) {
         Stream<Location> matchesId1 =  graph.vertexSet().stream().filter(l -> l.getId() == id);
         return matchesId1.findFirst().get();
     }
 
-    private Location getLocationIdFromPosition(Pair<Float, Float> position) {
-        Stream<Location> matchesId1 =  graph.vertexSet().stream().filter(l -> l.getPosition() == position);
+    public Location getLocationIdFromPosition(Pair<Float, Float> position) {
+        Stream<Location> matchesId1 =  graph.vertexSet().stream().filter(l -> l.getPosition().equals(position));
         return matchesId1.findFirst().get();
     }
 
-    private float getLocationsDistance(Location l1, Location l2) {
+    public float getLocationsDistance(Location l1, Location l2) {
         List<DistanceEdge> path = shortestPath(l1.getId(), l2.getId());
 
         float totalDist = 0;
@@ -370,6 +374,10 @@ public class Map {
         }
 
         return totalDist;
+    }
+
+    public float getDistancePassingLocation(Location l1, Location l2, Location l3) {
+        return 1;
     }
 
     @Override

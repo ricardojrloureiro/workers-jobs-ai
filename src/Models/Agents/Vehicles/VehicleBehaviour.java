@@ -25,7 +25,7 @@ public class VehicleBehaviour extends ContractNetResponder {
         try {
             System.out.println("Agent "+ getAgent().getLocalName()+": CFP received from "+cfp.getSender().getName()+". Action is "+cfp.getContentObject());
 
-            int proposal = ((Vehicle) getAgent()).evaluateAction((FixedPriceJob) cfp.getContentObject());
+            float proposal = ((Vehicle) getAgent()).evaluateAction((FixedPriceJob) cfp.getContentObject());
             if (proposal > 0) {
                 // We provide a proposal
                 System.out.println("Agent "+getAgent().getLocalName()+": Proposing "+proposal);

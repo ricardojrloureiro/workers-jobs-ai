@@ -33,6 +33,9 @@ public class Motorcycle extends Vehicle {
         this.setMovementType(Vehicle.STREET);
         this.setCurrentPosition(new Pair<>(0.0f, 0.0f));
         this.setTools(Motorcycle.generateToolsArray());
+        this.setmBateryCapacity(350);
+        this.setmMoney(500);
+
 
 
         // regista agente no DF

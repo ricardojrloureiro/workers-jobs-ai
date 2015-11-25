@@ -27,7 +27,7 @@ public class JobContractor extends Agent {
 
     // Default constructor
     public JobContractor() {
-        mJobList.add(new FixedPriceJob(10,new int[]{Tool.f1,Tool.f2},100,8,new int[]{4}));
+        mJobList.add(new FixedPriceJob(10,new int[]{Tool.f1,Tool.f2},100,9,new int[]{4}));
         //mJobList.add(new FixedPriceJob(5,new int[]{1,2},100));
         //mJobList.add(new FixedPriceJob(20,new int[]{1,2},100));
     }

@@ -32,6 +32,9 @@ public class Truck extends Vehicle {
         this.setMovementType(Vehicle.STREET);
         this.setCurrentPosition(new Pair<>(0.0f, 0.0f));
         this.setTools(Truck.generateToolsArray());
+        this.setmBateryCapacity(3000);
+        this.setmMoney(500);
+
 
 
         // regista agente no DF

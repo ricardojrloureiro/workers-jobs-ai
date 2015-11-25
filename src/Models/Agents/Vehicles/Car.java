@@ -29,8 +29,10 @@ public class Car extends Vehicle {
         this.setBatteryCharge(500);
         this.setLoadCapacity(550);
         this.setMovementType(Vehicle.STREET);
-        this.setCurrentPosition(new Pair<>(0.0f, 0.0f));
+        this.setCurrentPosition(new Pair<>(-159f, 36f));
         this.setTools(Car.generateToolsArray());
+        this.setmBateryCapacity(500);
+        this.setmMoney(500);
 
 
         // regista agente no DF
@@ -53,8 +55,6 @@ public class Car extends Vehicle {
                 MessageTemplate.MatchPerformative(ACLMessage.CFP) );
         VehicleBehaviour b = new VehicleBehaviour(this, template);
         addBehaviour(b);
-
-
     }
 
     protected void takeDown() {

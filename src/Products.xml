@@ -7,36 +7,63 @@
             <name>Leite</name>
             <weight>10</weight>
             <time_to_produce>20</time_to_produce>
+            <tools>
+                <tool>f1</tool>
+            </tools>
         </product>
         <product>
             <id>2</id>
             <name>Arroz</name>
             <weight>27</weight>
             <time_to_produce>40</time_to_produce>
+            <tools>
+                <tool>f2</tool>
+                <tool>f3</tool>
+            </tools>
         </product>
         <product>
             <id>3</id>
             <name>Queijo</name>
             <weight>30</weight>
             <time_to_produce>87</time_to_produce>
+            <tools>
+                <tool>f1</tool>
+                <tool>f3</tool>
+            </tools>
         </product>
         <product>
             <id>4</id>
             <name>Macbook</name>
             <weight>100</weight>
             <time_to_produce>200</time_to_produce>
+            <tools>
+                <tool>f1</tool>
+                <tool>f2</tool>
+                <tool>f3</tool>
+                <tool>tool1</tool>
+            </tools>
         </product>
         <product>
             <id>5</id>
             <name>iPhone</name>
             <weight>70</weight>
             <time_to_produce>200</time_to_produce>
+            <tools>
+                <tool>f1</tool>
+                <tool>f2</tool>
+                <tool>tool1</tool>  
+            </tools>
         </product>
         <product>
             <id>6</id>
             <name>iPad</name>
             <weight>87</weight>
             <time_to_produce>200</time_to_produce>
+            <tools>
+                <tool>f1</tool>
+                <tool>f3</tool>
+                <tool>tool1</tool> 
+            </tools>
         </product>
 
     </products>

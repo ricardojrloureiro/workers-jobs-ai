@@ -9,8 +9,8 @@
                 <name>GALP</name>
                 <charge_per_minute>100</charge_per_minute>
                 <position>
-                    <y>49.610710</y>
-                    <x>-105.117188</x>
+                    <y>49</y>
+                    <x>-105</x>
                 </position>
             </point_of_interest>
 
@@ -18,8 +18,8 @@
                 <name>Prio</name>
                 <charge_per_minute>77</charge_per_minute>
                 <position>
-                    <y>-3.162456</y>
-                    <x>-89.296875</x>
+                    <y>-3</y>
+                    <x>-89</x>
                 </position>
             </point_of_interest>
 
@@ -27,8 +27,8 @@
                 <name>Repsol</name>
                 <charge_per_minute>89</charge_per_minute>
                 <position>
-                    <y>57.136239</y>
-                    <x>63.281250</x>
+                    <y>57</y>
+                    <x>63</x>
                 </position>
             </point_of_interest>
 
@@ -37,16 +37,16 @@
             <point_of_interest id="4" type="store">
                 <name>Continente</name>
                 <position>
-                    <y>8.754795</y>
-                    <x>26.367188</x>
+                    <y>8</y>
+                    <x>26</x>
                 </position>
             </point_of_interest>
 
             <point_of_interest id="5" type="store">
                 <name>Apple</name>
                 <position>
-                    <y>-39.909736</y>
-                    <x>142.734375</x>
+                    <y>-39</y>
+                    <x>142</x>
                 </position>
 
             </point_of_interest>
@@ -57,8 +57,8 @@
             <point_of_interest id="6" type="warehouse">
                 <name>World WareHouse</name>
                 <position>
-                    <y>-47.989922</y>
-                    <x>-152.578125</x>
+                    <y>-47</y>
+                    <x>-152</x>
                 </position>
                 <max_weight>850</max_weight>
             </point_of_interest>
@@ -66,18 +66,18 @@
             <point_of_interest id="7" type="warehouse">
                 <name>Mini WareHouse</name>
                 <position>
-                    <y>57.704147</y>
-                    <x>-23.554688</x>
+                    <y>57</y>
+                    <x>-23</x>
                 </position>
                 <max_weight>300</max_weight>
             </point_of_interest>
         </points_of_interest>
 
         <no_interest_locations>
-            <location id="8" y="36.315125" x="-159.960938" />
-            <location id="9" y="-18.312811" x="-49.570313" />
-            <location id="10" y="12.211180" x="86.835938" />
-            <location id="11" y="45.336702" x="161.367188" />
+            <location id="8" y="36" x="-159" />
+            <location id="9" y="-18" x="-49" />
+            <location id="10" y="12" x="86" />
+            <location id="11" y="45" x="161" />
         </no_interest_locations>
 
     </locations>
