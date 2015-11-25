@@ -120,7 +120,7 @@ public class Vehicle extends Agent {
             // buying from houses or sub jobs
             //TODO acrescentar métodos para criacao de subtrabalhos
 
-            costOfWork=1000;
+            costOfWork=1;
         }
 
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
@@ -129,12 +129,15 @@ public class Vehicle extends Agent {
         Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
 
         float distanceToNearestBatteryStation = this.mMap.getLocationsDistance(currentLocation, nearestBatteryStationLocation);
+        System.out.println("Distance to nearest BS: " + distanceToNearestBatteryStation);
 
         //evaluates distances
         float distance = this.mMap.getLocationsDistance(
                 currentLocation,
                 jobLocation
         );
+        System.out.println("Distance before ir carregar: " + distance);
+
 
         // evaluates the distance necessary if a recharge is required
         if (distance + distanceToNearestBatteryStation >= this.mBateryCharge) {
@@ -144,6 +147,9 @@ public class Vehicle extends Agent {
                     jobLocation
             );
         }
+
+        System.out.println("Distance com ir carregar: " + distance);
+
 
 
         compensationValue = Math.round(job.getPrice() - (costOfWork + distance));

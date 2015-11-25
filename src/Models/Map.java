@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class Map {
@@ -58,7 +59,22 @@ public class Map {
     }
 
     public Location getNearestBatteryStation(Location currentPosition) {
-        return currentPosition;
+
+        Set<Location> locations = graph.vertexSet();
+
+        Location toReturn = null;
+        float minDistance = 999999999;
+
+        for(Location l : locations) {
+            if(l instanceof BatteryStation) {
+                float currentDistance = getLocationsDistance(l,currentPosition);
+                if(currentDistance < minDistance) {
+                    minDistance = currentDistance;
+                    toReturn = l;
+                }
+            }
+        }
+        return toReturn;
     }
 
     private static class DistanceEdge extends DefaultEdge {
@@ -89,9 +105,7 @@ public class Map {
             parseProdutsList(rootEle);
             parseProdutsConnections(rootEle);
 
-        } catch (SAXException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (SAXException | IOException e) {
             e.printStackTrace();
         }
     }
@@ -377,7 +391,10 @@ public class Map {
     }
 
     public float getDistancePassingLocation(Location l1, Location l2, Location l3) {
-        return 1;
+        float distance1 = getLocationsDistance(l1,l2);
+        float distance2 = getLocationsDistance(l2,l3);
+
+        return distance1 + distance2;
     }
 
     @Override
