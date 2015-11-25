@@ -109,7 +109,7 @@ public class JobContractor extends Agent {
 
         // cria behaviour
         for(Job j: mJobList) {
-            
+
             try {
 
                 // Fill the CFP message

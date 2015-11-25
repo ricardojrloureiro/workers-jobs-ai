@@ -45,13 +45,6 @@ public class Map {
 
 
             try {
-                AgentController aController = ac.createNewAgent("Carro fixe",Car.class.getName(),null);
-                aController.start();
-            } catch (StaleProxyException e) {
-                e.printStackTrace();
-            }
-
-            try {
                 AgentController aController = ac.createNewAgent("Contractor",JobContractor.class.getName(),null);
                 aController.start();
             } catch (StaleProxyException e) {
@@ -68,6 +61,7 @@ public class Map {
         if (ref == null)
             // it's ok, we can call this constructor
             ref = new Map(ac);
+
         return ref;
     }
 
