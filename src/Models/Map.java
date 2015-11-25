@@ -355,6 +355,23 @@ public class Map {
         return matchesId1.findFirst().get();
     }
 
+    private Location getLocationIdFromPosition(Pair<Float, Float> position) {
+        Stream<Location> matchesId1 =  graph.vertexSet().stream().filter(l -> l.getPosition() == position);
+        return matchesId1.findFirst().get();
+    }
+
+    private float getLocationsDistance(Location l1, Location l2) {
+        List<DistanceEdge> path = shortestPath(l1.getId(), l2.getId());
+
+        float totalDist = 0;
+
+        for(DistanceEdge e : path) {
+            totalDist += e.getDistance();
+        }
+
+        return totalDist;
+    }
+
     @Override
     public String toString() {
         return this.graph.toString();

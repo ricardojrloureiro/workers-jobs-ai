@@ -128,8 +128,8 @@ public class JobContractor extends Agent {
                 }
 
                 msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
-                // We want to receive a reply in 10 secs
-                msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+                // We want to receive a reply depending in the job deadline
+                msg.setReplyByDate(new Date(System.currentTimeMillis() + (j.getDeadline()*1000)));
                 msg.setContentObject(j);
 
                 JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
