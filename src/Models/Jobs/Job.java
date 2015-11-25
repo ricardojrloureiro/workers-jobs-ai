@@ -13,4 +13,12 @@ public class Job implements Serializable {
         this.mTimeToComplete = mTimeToComplete;
         this.requiredTools = requiredTools;
     }
+
+    public int getTimeToComplete() {
+        return mTimeToComplete;
+    }
+
+    public int[] getRequiredTools() {
+        return requiredTools;
+    }
 }

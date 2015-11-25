@@ -8,7 +8,9 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
 import javafx.util.Pair;
@@ -79,16 +81,12 @@ public class Drone extends Vehicle {
         }
 
         // cria behaviour
-        VehicleBehaviour b = new VehicleBehaviour(this);
+
+        MessageTemplate template = MessageTemplate.and(
+        MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
+        MessageTemplate.MatchPerformative(ACLMessage.CFP) );
+        VehicleBehaviour b = new VehicleBehaviour(this, template);
         addBehaviour(b);
-
-
-        try {
-            AgentController aController = getContainerController().createNewAgent("Carro fixe",Car.class.getName(),null);
-            aController.start();
-        } catch (StaleProxyException e) {
-            e.printStackTrace();
-        }
 
     }
 

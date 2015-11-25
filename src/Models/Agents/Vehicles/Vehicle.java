@@ -90,4 +90,12 @@ public class Vehicle extends Agent {
         this.mMap = Map.getMap(ac);
     }
 
+    public int evaluateAction() {
+        return 3;
+    }
+
+    public Boolean performAction() {
+        return true;
+    }
+
 }

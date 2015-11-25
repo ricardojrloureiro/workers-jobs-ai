@@ -6,6 +6,9 @@ import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -45,7 +48,11 @@ public class Truck extends Vehicle {
         }
 
         // cria behaviour
-        VehicleBehaviour b = new VehicleBehaviour(this);
+
+        MessageTemplate template = MessageTemplate.and(
+                MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
+                MessageTemplate.MatchPerformative(ACLMessage.CFP) );
+        VehicleBehaviour b = new VehicleBehaviour(this, template);
         addBehaviour(b);
 
 

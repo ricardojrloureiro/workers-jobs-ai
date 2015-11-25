@@ -1,6 +1,7 @@
 package Models;
 
 import Models.Agents.JobContractor;
+import Models.Agents.Vehicles.Car;
 import jade.wrapper.*;
 
 import Models.Agents.Locations.BatteryStation;
@@ -42,12 +43,21 @@ public class Map {
             parseProduts("src/Products.xml");
             parse("src/POI.xml",ac);
 
+
+            try {
+                AgentController aController = ac.createNewAgent("Carro fixe",Car.class.getName(),null);
+                aController.start();
+            } catch (StaleProxyException e) {
+                e.printStackTrace();
+            }
+
             try {
                 AgentController aController = ac.createNewAgent("Contractor",JobContractor.class.getName(),null);
                 aController.start();
             } catch (StaleProxyException e) {
                 e.printStackTrace();
             }
+
 
         } catch (ParserConfigurationException e) {
             e.printStackTrace();

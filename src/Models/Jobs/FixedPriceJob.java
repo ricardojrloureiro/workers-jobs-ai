@@ -8,4 +8,8 @@ public class FixedPriceJob extends Job {
         super(timeToComplete,requiredTools);
         this.price = price;
     }
+
+    public float getPrice() {
+        return price;
+    }
 }

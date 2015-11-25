@@ -2,16 +2,22 @@ package Models.Agents;
 
 import Models.Jobs.FixedPriceJob;
 import Models.Jobs.Job;
+import jade.core.AID;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
+import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
+import jade.proto.ContractNetInitiator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Enumeration;
+import java.util.Vector;
 
 
 public class JobContractor extends Agent {
@@ -25,53 +31,68 @@ public class JobContractor extends Agent {
         mJobList.add(new FixedPriceJob(20,new int[]{1,2},100));
     }
 
-    private class JobContractorBehaviour extends SimpleBehaviour {
-        private int n = 0;
+    private class JobContractorBehaviour extends ContractNetInitiator {
 
-        public JobContractorBehaviour(jade.core.Agent a) {
-            super(a);
+        public JobContractorBehaviour(Agent a, ACLMessage cfp) {
+            super(a, cfp);
         }
 
-        public void action() {
+        protected void handlePropose(ACLMessage propose, Vector v) {
+            System.out.println("Agent "+propose.getSender().getName()+" proposed "+propose.getContent());
+        }
 
-            //mandar propostas para os trabalhos todos
+        protected void handleRefuse(ACLMessage refuse) {
+            System.out.println("Agent "+refuse.getSender().getName()+" refused");
+        }
 
-            //Search template - searches for all vehicles
-            DFAgentDescription template = new DFAgentDescription();
-            ServiceDescription sdVehicles = new ServiceDescription();
-            sdVehicles.setType("Vehicle");
-            template.addServices(sdVehicles);
-
-            try {
-                DFAgentDescription[] results = DFService.search(this.getAgent(), template);
-
-                ACLMessage msg = new ACLMessage(ACLMessage.INFORM);
-
-                for (DFAgentDescription result : results){
-                    msg.addReceiver(result.getName());
-                }
-
-                msg.setContentObject(mJobList.get(0));
-                send(msg);
-
-            } catch(FIPAException | IOException e) {
-                e.printStackTrace();
+        protected void handleFailure(ACLMessage failure) {
+            if (failure.getSender().equals(myAgent.getAMS())) {
+                // FAILURE notification from the JADE runtime: the receiver
+                // does not exist
+                System.out.println("Responder does not exist");
             }
-
-            mJobList.remove(0);
+            else {
+                System.out.println("Agent "+failure.getSender().getName()+" failed");
+            }
+            // Immediate failure --> we will not receive a response from this agent
 
         }
 
-        public boolean done() {
-            return mJobList.isEmpty();
+        protected void handleAllResponses(Vector responses, Vector acceptances) {
+            // Evaluate proposals.
+            int bestProposal = -1;
+            AID bestProposer = null;
+            ACLMessage accept = null;
+            Enumeration e = responses.elements();
+            while (e.hasMoreElements()) {
+                ACLMessage msg = (ACLMessage) e.nextElement();
+                if (msg.getPerformative() == ACLMessage.PROPOSE) {
+                    ACLMessage reply = msg.createReply();
+                    reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    acceptances.addElement(reply);
+                    int proposal = Integer.parseInt(msg.getContent());
+                    if (proposal > bestProposal) {
+                        bestProposal = proposal;
+                        bestProposer = msg.getSender();
+                        accept = reply;
+                    }
+                }
+            }
+            // Accept the proposal of the best proposer
+            if (accept != null) {
+                System.out.println("Accepting proposal "+bestProposal+" from responder "+bestProposer.getName());
+                accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            }
         }
+
+        protected void handleInform(ACLMessage inform) {
+            System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
+        }
+
 
     }
 
     protected void setup() {
-
-        //ler jobs
-
         // regista agente no DF
         DFAgentDescription dfd = new DFAgentDescription();
         dfd.setName(getAID());
@@ -87,8 +108,39 @@ public class JobContractor extends Agent {
 
 
         // cria behaviour
-        JobContractorBehaviour b = new JobContractorBehaviour(this);
-        addBehaviour(b);
+        for(Job j: mJobList) {
+            
+            try {
+
+                // Fill the CFP message
+                ACLMessage msg = new ACLMessage(ACLMessage.CFP);
+
+                //Search template - searches for all vehicles
+                DFAgentDescription template = new DFAgentDescription();
+                ServiceDescription sdVehicles = new ServiceDescription();
+                sdVehicles.setType("Vehicle");
+                template.addServices(sdVehicles);
+                DFAgentDescription[] results = DFService.search(this, template);
+
+                for (DFAgentDescription result : results){
+                    msg.addReceiver(result.getName());
+                }
+
+                msg.setProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET);
+                // We want to receive a reply in 10 secs
+                msg.setReplyByDate(new Date(System.currentTimeMillis() + 10000));
+                msg.setContentObject(j);
+
+                JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
+                addBehaviour(b);
+
+            } catch(FIPAException | IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+
 
 
     }
