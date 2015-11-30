@@ -175,6 +175,10 @@ public class Vehicle extends Agent {
                 l1
         );
 
+        if(distance - mBateryCharge < 0) {
+            return false;
+        }
+
         long travelTime = (long) (distance/this.mSpeed * 1000);
 
         try {
@@ -182,6 +186,7 @@ public class Vehicle extends Agent {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
 
         this.mCurrentPosition = l1.getPosition();
 
