@@ -177,6 +177,8 @@ public class Vehicle extends Agent {
 
         if(distance - mBateryCharge < 0) {
             return false;
+        } else {
+            this.mBateryCharge -= distance;
         }
 
         long travelTime = (long) (distance/this.mSpeed * 1000);
