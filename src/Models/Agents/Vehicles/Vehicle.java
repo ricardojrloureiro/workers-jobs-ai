@@ -138,7 +138,6 @@ public class Vehicle extends Agent {
         );
         System.out.println("Distance before ir carregar: " + distance);
 
-
         // evaluates the distance necessary if a recharge is required
         if (distance + distanceToNearestBatteryStation >= this.mBateryCharge) {
             distance = this.mMap.getDistancePassingLocation(
@@ -150,10 +149,7 @@ public class Vehicle extends Agent {
 
         System.out.println("Distance com ir carregar: " + distance);
 
-
-
         compensationValue = Math.round(job.getPrice() - (costOfWork + distance));
-
 
         System.out.println("compensation value is: " + compensationValue);
         return compensationValue;
@@ -168,6 +164,26 @@ public class Vehicle extends Agent {
         System.out.println("Price: " + job.getPrice());
         System.out.println("Products to make: " + Arrays.toString(job.getProductsToMake()));
 
+
+        return true;
+    }
+
+    public boolean moveToLocation(Location l1) {
+        Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
+        float distance = this.mMap.getLocationsDistance(
+                currentLocation,
+                l1
+        );
+
+        long travelTime = (long) (distance/this.mSpeed * 1000);
+
+        try {
+            Thread.sleep(travelTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.mCurrentPosition = l1.getPosition();
 
         return true;
     }
