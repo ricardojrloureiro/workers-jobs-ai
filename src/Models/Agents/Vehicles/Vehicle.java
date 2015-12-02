@@ -93,12 +93,9 @@ public class Vehicle extends Agent {
     }
 
     /**
-     * Verifica se tem todas as tools
-     * se não:
-     * - Verifica quanto terá de gastar em sub trabalhos
-     * - Verifica distância mais preço nas lojas
-     * <p>
-     * Verifica quanto terá de gastar em gasolina
+     *
+     * @param job that will be analysed
+     * @return an integer that represents the value of the current job
      */
     public int evaluateAction(FixedPriceJob job) {
 
@@ -156,6 +153,11 @@ public class Vehicle extends Agent {
 
     }
 
+    /**
+     *
+     * @param job
+     * @return
+     */
     public Boolean performAction(FixedPriceJob job) {
 
         System.out.println("DOING JOB");
@@ -168,11 +170,16 @@ public class Vehicle extends Agent {
         return true;
     }
 
-    public boolean moveToLocation(Location l1) {
+    /**
+     *
+     * @param finalLocation final location
+     * @return true or false, depending if had enough gas to perform the transition
+     */
+    public boolean moveToLocation(Location finalLocation) {
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
         float distance = this.mMap.getLocationsDistance(
                 currentLocation,
-                l1
+                finalLocation
         );
 
         if(distance - mBateryCharge < 0) {
@@ -189,8 +196,7 @@ public class Vehicle extends Agent {
             e.printStackTrace();
         }
 
-
-        this.mCurrentPosition = l1.getPosition();
+        this.mCurrentPosition = finalLocation.getPosition();
 
         return true;
     }
