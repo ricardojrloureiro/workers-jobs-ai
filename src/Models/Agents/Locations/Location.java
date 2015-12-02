@@ -13,6 +13,7 @@ public class Location extends Agent {
 
     private Pair<Float, Float> mPosition;
     private int mId;
+    private String name;
 
     public Location() {
 
@@ -38,6 +39,10 @@ public class Location extends Agent {
     public void setPosition(Pair<Float, Float> mPosition) {
         this.mPosition = mPosition;
     }
+
+    public String getLocationName() { return this.name; }
+
+    public void setName(String name) { this.name = name; }
 
     @Override public String toString() {
         return "" + mId;

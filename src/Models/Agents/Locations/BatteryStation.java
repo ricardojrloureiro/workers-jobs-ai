@@ -51,7 +51,7 @@ public class BatteryStation extends PointOfInterest {
             ACLMessage msg = blockingReceive();
             if (msg.getPerformative() == ACLMessage.INFORM) {
                 BatteryStation b = (BatteryStation) this.getAgent();
-                System.out.println("SOU A BOMBA " + b.getPOIName() + " " + b.getChargePerMinute() + " " + b.getPosition());
+                System.out.println("SOU A BOMBA " + b.getLocationName() + " " + b.getChargePerMinute() + " " + b.getPosition());
             }
 
         }

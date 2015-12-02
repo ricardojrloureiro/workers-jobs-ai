@@ -89,14 +89,13 @@ public class Drone extends Vehicle {
         VehicleBehaviour b = new VehicleBehaviour(this, template);
         addBehaviour(b);
 
-        /*
         try {
             AgentController aController = getContainerController().createNewAgent("Carro fixe",Car.class.getName(),null);
             aController.start();
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
-        */
+
 
         try {
             AgentController aController = getContainerController().createNewAgent("Contractor",JobContractor.class.getName(),null);

@@ -2,12 +2,13 @@ package Models.Agents.Vehicles;
 
 import Models.Agents.Locations.BatteryStation;
 import Models.Agents.Locations.Location;
-import Models.Jobs.FixedPriceJob;
+import Models.Jobs.Job;
 import Models.Map;
 import jade.core.Agent;
 import jade.wrapper.AgentContainer;
 import javafx.util.Pair;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -15,6 +16,8 @@ public class Vehicle extends Agent {
 
     public static int AIR = 1;
     public static int STREET = 2;
+
+    public boolean available = true;
 
     private int mMoney;
     private int mSpeed;
@@ -99,19 +102,10 @@ public class Vehicle extends Agent {
         return distance/this.getSpeed();
     }
 
-    /**
-     *
-     * @param job that will be analysed
-     * @return an integer that represents the value of the current job
-     */
-    public int evaluateAction(FixedPriceJob job) {
+    public ArrayList<Location> getBestPathToJob(Job job)
+    {
 
-        int toolsMissing = 0;
-
-        for (int i : job.getRequiredTools()) {
-            if (!mTools.contains(i))
-                toolsMissing++;
-        }
+        ArrayList<Location> path = new ArrayList<>();
 
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
         Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
@@ -146,42 +140,87 @@ public class Vehicle extends Agent {
                 jobLocation
         );
 
-        System.out.println("Distance Job - BS_Job: " + distanceJobToBatteryStation);
-        System.out.println("Distance Agent - BS_Agent: " + distanceCurrentLocationToBatteryStation);
-        System.out.println("Distance BS_Agent - Job: " + distanceNearestBSCurrentPositionToJob);
-        System.out.println("Distance Agent - Job: " + distanceAgentToJob);
-
+       // System.out.println("Distance Job - BS_Job: " + distanceJobToBatteryStation);
+       // System.out.println("Distance Agent - BS_Agent: " + distanceCurrentLocationToBatteryStation);
+       // System.out.println("Distance BS_Agent - Job: " + distanceNearestBSCurrentPositionToJob);
+       // System.out.println("Distance Agent - Job: " + distanceAgentToJob);
 
         float distanceJobBS = distanceAgentToJob + distanceJobToBatteryStation;
         float distanceBSJob = distanceCurrentLocationToBatteryStation + distanceNearestBSCurrentPositionToJob;
 
 
-        System.out.println("Distance Job -> BS: " + distanceJobBS);
-        System.out.println("Distance BS -> Job: " + distanceBSJob);
+        //System.out.println("Distance Job -> BS: " + distanceJobBS);
+        //System.out.println("Distance BS -> Job: " + distanceBSJob);
 
-
-        if(distanceJobBS > this.getBateryCharge())
+        float totalTimeJobBS = -1;
+        float totalTimeBSJob = -1;
+        if(distanceBSJob < this.getBateryCharge())
         {
-            return 0;
+
+            float bsVehicleCharge = this.getBateryCharge() - distanceCurrentLocationToBatteryStation;
+            float chargeLeftWhenOnBS = this.mBateryCapacity - bsVehicleCharge;
+            float timeToCharge = chargeLeftWhenOnBS /nearestBatteryStationCurrentLocation.getChargePerMinute();
+            //System.out.println("Time to charge: " + timeToCharge);
+
+            totalTimeBSJob = timeToTravelDistance(distanceBSJob) + timeToCharge;
         }
-        else if(distanceBSJob > this.getBateryCharge())
+        if(distanceJobBS < this.getBateryCharge())
         {
-            return 0;
+            totalTimeJobBS = timeToTravelDistance(distanceAgentToJob);
         }
 
-        float bsVehicleCharge = this.getBateryCharge() - distanceCurrentLocationToBatteryStation;
-        float chargeLeftWhenOnBS = this.mBateryCapacity - bsVehicleCharge;
-        float timeToCharge = chargeLeftWhenOnBS /nearestBatteryStationCurrentLocation.getChargePerMinute();
+        if(totalTimeJobBS == -1)
+            totalTimeJobBS = totalTimeBSJob+1;
+        if(totalTimeBSJob == -1)
+            totalTimeBSJob = totalTimeJobBS+1;
 
-        System.out.println("Time to charge: " + timeToCharge);
+        path.add(currentLocation);
+        if(totalTimeBSJob > totalTimeJobBS)
+        {
+            path.add(nearestBatteryStationCurrentLocation);
+            path.add(jobLocation);
+        }else{
+            path.add(jobLocation);
+        }
 
-        float totalTimeBSJob = timeToTravelDistance(distanceBSJob) + timeToCharge;
-        float totalTimeJobBS = timeToTravelDistance(distanceAgentToJob);
+        return path;
+    }
 
-        System.out.println("Total time BS -> Job: " + totalTimeBSJob);
-        System.out.println("Total time Job -> BS: " + totalTimeJobBS);
+    /**
+     *
+     * @param job that will be analysed
+     * @return an integer that represents the value of the current job
+     */
+    public int evaluateAction(Job job) {
 
-        return (totalTimeBSJob < totalTimeJobBS) ? Math.round(totalTimeBSJob + toolsMissing) : Math.round(totalTimeJobBS + toolsMissing);
+        if(!available)
+            return 0;
+
+        available = false;
+
+        int toolsMissing = 0;
+
+        for (int i : job.getRequiredTools()) {
+            if (!mTools.contains(i))
+                toolsMissing++;
+        }
+
+        ArrayList<Location> path = getBestPathToJob(job);
+
+        float totalDistance = 0;
+
+        for(int i = 0; i < path.size()-1; i++)
+        {
+
+            totalDistance += this.mMap.getLocationsDistance(
+                    path.get(i),
+                    path.get(i+1)
+            );
+        }
+
+        float totalTime = timeToTravelDistance(totalDistance);
+
+        return Math.round(totalTime + toolsMissing);
     }
 
     /**
@@ -189,13 +228,24 @@ public class Vehicle extends Agent {
      * @param job
      * @return
      */
-    public Boolean performAction(FixedPriceJob job) {
+    public Boolean performAction(Job job) {
 
-        System.out.println("DOING JOB");
+        System.out.println("STARTING JOB --- " + getClass());
 
-
-        System.out.println("Price: " + job.getPrice());
+        System.out.println("Job Price: " + job.getPrice());
         System.out.println("Products to make: " + Arrays.toString(job.getProductsToMake()));
+
+        ArrayList<Location> path = getBestPathToJob(job);
+
+        for(Location loc : path)
+        {
+            moveToLocation(loc);
+        }
+
+
+        System.out.println("ENDING JOB --- " + getClass());
+
+        available = true;
 
 
         return true;
@@ -207,13 +257,16 @@ public class Vehicle extends Agent {
      * @return true or false, depending if had enough gas to perform the transition
      */
     public boolean moveToLocation(Location finalLocation) {
+
+        //System.out.println("mover para a localizacao " + finalLocation.getLocationName());
+
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
         float distance = this.mMap.getLocationsDistance(
                 currentLocation,
                 finalLocation
         );
 
-        if(distance - mBateryCharge < 0) {
+        if(mBateryCharge - distance  < 0) {
             return false;
         } else {
             this.mBateryCharge -= distance;
@@ -229,6 +282,7 @@ public class Vehicle extends Agent {
 
         this.mCurrentPosition = finalLocation.getPosition();
 
+        //System.out.println("chegou a localizacao " + finalLocation.getLocationName());
         return true;
     }
 

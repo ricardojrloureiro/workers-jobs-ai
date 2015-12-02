@@ -10,13 +10,15 @@ public class Job implements Serializable {
     private int finalDestinationId;
     private int[] productsToMake;
     public static float PENALTY = 71;
+    private float price;
 
-    public Job(int mTimeToComplete, int[] requiredTools, int finalDestinationId, int[] productsToMake) {
+    public Job(float price, int[] requiredTools, int mTimeToComplete, int finalDestinationId, int[] productsToMake) {
         this.mTimeToComplete = mTimeToComplete;
         this.requiredTools = requiredTools;
         this.mDeadLine = 10;
         this.finalDestinationId = finalDestinationId;
         this.productsToMake = productsToMake;
+        this.price = price;
     }
 
     public int getTimeToComplete() {
@@ -37,5 +39,10 @@ public class Job implements Serializable {
 
     public int[] getProductsToMake() {
         return productsToMake;
+    }
+
+
+    public float getPrice() {
+        return price;
     }
 }

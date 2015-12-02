@@ -57,7 +57,7 @@ public class Store extends PointOfInterest {
             ACLMessage msg = blockingReceive();
             if (msg.getPerformative() == ACLMessage.INFORM) {
                 Store s = (Store) this.getAgent();
-                System.out.println("SOU A Store " + s.getPOIName() + " " + s.getPosition());
+                System.out.println("SOU A Store " + s.getLocationName() + " " + s.getPosition());
 
                 for (java.util.Map.Entry<Product, Integer> entry : s.getProducts().entrySet()) {
                     System.out.println("Produto: " + entry.getKey().getName());

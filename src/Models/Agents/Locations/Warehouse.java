@@ -67,7 +67,7 @@ public class Warehouse extends PointOfInterest {
             ACLMessage msg = blockingReceive();
             if (msg.getPerformative() == ACLMessage.INFORM) {
                 Warehouse w = (Warehouse) this.getAgent();
-                System.out.println("SOU A Warehouse " + w.getPOIName() + " " + w.getMaxWeight() + " " + w.getPosition());
+                System.out.println("SOU A Warehouse " + w.getLocationName() + " " + w.getMaxWeight() + " " + w.getPosition());
 
                 for (java.util.Map.Entry<Product, Integer> entry : w.getProducts().entrySet()) {
                     System.out.println("Produto: " + entry.getKey().getName());
