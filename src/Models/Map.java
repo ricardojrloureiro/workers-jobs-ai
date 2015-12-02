@@ -150,7 +150,18 @@ public class Map {
             int time_to_produce = getIntValue(product,"time_to_produce");
 
 
-            Product p = new Product(name,weight);
+            ArrayList<Tool> toolsArray = new ArrayList<>();
+            NodeList tools = product.getElementsByTagName("tool");
+            for(int j=0; j < tools.getLength(); j++)
+            {
+                Element toolEle = (Element) tools.item(j);
+
+                String toolString=toolEle.getTextContent();
+
+                toolsArray.add(new Tool(Tool.fromString(toolString)));
+            }
+
+            Product p = new Product(name,weight, toolsArray);
             p.setTimeRequiredToProduce(time_to_produce);
 
             products_list.add(p);

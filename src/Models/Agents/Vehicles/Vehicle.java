@@ -2,15 +2,14 @@ package Models.Agents.Vehicles;
 
 import Models.Agents.Locations.BatteryStation;
 import Models.Agents.Locations.Location;
+import Models.Agents.Threads.WorkThread;
 import Models.Jobs.Job;
 import Models.Map;
 import jade.core.Agent;
 import jade.wrapper.AgentContainer;
 import javafx.util.Pair;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Vehicle extends Agent {
 
@@ -185,6 +184,7 @@ public class Vehicle extends Agent {
 
         return path;
     }
+
 
     /**
      *

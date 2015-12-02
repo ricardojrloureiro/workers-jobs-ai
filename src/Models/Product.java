@@ -1,9 +1,12 @@
 package Models;
 
 
+import java.util.ArrayList;
+
 public class Product{
     private float weight;
     private String name;
+    private ArrayList<Tool> toolsRequiredtoProduce;
 
     /**
      * Time to produce the product in milliseconds
@@ -12,10 +15,11 @@ public class Product{
 
 
 
-    public Product(String name, float weight)
+    public Product(String name, float weight, ArrayList<Tool>  tools)
     {
         this.name = name;
         this.weight = weight;
+        this.toolsRequiredtoProduce = tools;
     }
 
     public float getWeight() {
@@ -40,5 +44,13 @@ public class Product{
 
     public void setTimeRequiredToProduce(float timeRequiredToProduce) {
         this.timeRequiredToProduce = timeRequiredToProduce;
+    }
+
+    public ArrayList<Tool> getToolsRequiredtoProduce() {
+        return toolsRequiredtoProduce;
+    }
+
+    public void setToolsRequiredtoProduce(ArrayList<Tool> toolsRequiredtoProduce) {
+        this.toolsRequiredtoProduce = toolsRequiredtoProduce;
     }
 }

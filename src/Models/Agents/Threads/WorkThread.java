@@ -1,6 +1,7 @@
-package Models.Agents.Vehicles;
+package Models.Agents.Threads;
 
 import Models.Agents.Locations.Location;
+import Models.Agents.Vehicles.Vehicle;
 import Models.Jobs.Job;
 
 import java.util.ArrayList;
