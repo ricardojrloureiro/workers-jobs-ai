@@ -242,8 +242,6 @@ public class Vehicle extends Agent {
      */
     public boolean moveToLocation(Location finalLocation) {
 
-        //System.out.println("mover para a localizacao " + finalLocation.getLocationName());
-
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
         float distance = this.mMap.getLocationsDistance(
                 currentLocation,
@@ -266,7 +264,6 @@ public class Vehicle extends Agent {
 
         this.mCurrentPosition = finalLocation.getPosition();
 
-        System.out.println("chegou a localizacao " + finalLocation.getLocationName());
         return true;
     }
 

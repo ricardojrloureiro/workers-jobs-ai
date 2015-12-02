@@ -17,7 +17,7 @@ public class WorkThread extends Thread {
     }
 
     public void run() {
-        System.out.println("STARTING JOB --- " + getClass());
+        System.out.println("STARTING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());
 
         ArrayList<Location> path = vehicle.getBestPathToJob(job);
 
@@ -26,8 +26,7 @@ public class WorkThread extends Thread {
             vehicle.moveToLocation(loc);
         }
 
-
-        System.out.println("ENDING JOB --- " + getClass());
+        System.out.println("ENDING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());
 
         vehicle.available = true;
     }

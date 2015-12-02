@@ -36,11 +36,11 @@ public class JobContractor extends Agent {
         }
 
         protected void handlePropose(ACLMessage propose, Vector v) {
-            System.out.println("Agent "+propose.getSender().getName()+" proposed "+propose.getContent());
+            //System.out.println("Agent "+propose.getSender().getName()+" proposed "+propose.getContent());
         }
 
         protected void handleRefuse(ACLMessage refuse) {
-            System.out.println("Agent "+refuse.getSender().getName()+" refused");
+            //System.out.println("Agent "+refuse.getSender().getName()+" refused");
         }
 
         protected void handleFailure(ACLMessage failure) {
@@ -83,8 +83,7 @@ public class JobContractor extends Agent {
             }
             // Accept the proposal of the best proposer
             if (accept != null) {
-                System.out.println("Accepting proposal "+bestProposal+" from responder "+bestProposer.getName());
-                availableAgentsList.replace(bestProposer, true, false);
+                //System.out.println("Accepting proposal "+ bestProposal +" from responder "+ bestProposer.getLocalName());
                 accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
             }
         }
