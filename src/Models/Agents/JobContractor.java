@@ -72,7 +72,11 @@ public class JobContractor extends Agent {
                     reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
                     acceptances.addElement(reply);
                     int proposal = Integer.parseInt(msg.getContent());
-                    if (proposal > bestProposal) {
+
+                    if (bestProposal == -1)
+                        bestProposal = proposal;
+
+                    if (proposal <= bestProposal ) {
                         bestProposal = proposal;
                         bestProposer = msg.getSender();
                         accept = reply;

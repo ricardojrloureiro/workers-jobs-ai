@@ -1,5 +1,6 @@
 package Models.Agents.Vehicles;
 
+import Models.Agents.Locations.BatteryStation;
 import Models.Agents.Locations.Location;
 import Models.Jobs.FixedPriceJob;
 import Models.Map;
@@ -92,6 +93,12 @@ public class Vehicle extends Agent {
         this.mMap = Map.getMap(ac);
     }
 
+
+    public float timeToTravelDistance(float distance)
+    {
+        return distance/this.getSpeed();
+    }
+
     /**
      *
      * @param job that will be analysed
@@ -99,58 +106,82 @@ public class Vehicle extends Agent {
      */
     public int evaluateAction(FixedPriceJob job) {
 
-        boolean hasAllTools = true;
-        int hasAllToolsEval = 5;
-        int compensationValue = 0;
-        int costOfWork=0;
+        int toolsMissing = 0;
 
         for (int i : job.getRequiredTools()) {
             if (!mTools.contains(i))
-                hasAllTools = false;
-        }
-
-        // evaluates tools
-        if (hasAllTools) {
-            compensationValue += hasAllToolsEval;
-        } else {
-            // check how much it will require to finish the job
-            // buying from houses or sub jobs
-            //TODO acrescentar métodos para criacao de subtrabalhos
-
-            costOfWork=1;
+                toolsMissing++;
         }
 
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
-        Location nearestBatteryStationLocation = this.mMap.getNearestBatteryStation(
-                (this.mMap.getLocationIdFromPosition(this.mCurrentPosition)));
         Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
 
-        float distanceToNearestBatteryStation = this.mMap.getLocationsDistance(currentLocation, nearestBatteryStationLocation);
-        System.out.println("Distance to nearest BS: " + distanceToNearestBatteryStation);
+        // nearest battery station from agent current location
+        BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
 
-        //evaluates distances
-        float distance = this.mMap.getLocationsDistance(
+        // nearest battery station from job location
+        BatteryStation nearestBatteryStationJobLocation = (BatteryStation) this.mMap.getNearestBatteryStation(jobLocation);
+
+        // distance from jog location to battery station
+        float distanceJobToBatteryStation = this.mMap.getLocationsDistance(
+                jobLocation,
+                nearestBatteryStationJobLocation
+        );
+
+        // distance from agent location to battery station
+        float distanceCurrentLocationToBatteryStation = this.mMap.getLocationsDistance(
+                currentLocation,
+                nearestBatteryStationCurrentLocation
+        );
+
+        // distance from agent to job
+        float distanceAgentToJob = this.mMap.getLocationsDistance(
                 currentLocation,
                 jobLocation
         );
-        System.out.println("Distance before ir carregar: " + distance);
 
-        // evaluates the distance necessary if a recharge is required
-        if (distance + distanceToNearestBatteryStation >= this.mBateryCharge) {
-            distance = this.mMap.getDistancePassingLocation(
-                    currentLocation,
-                    nearestBatteryStationLocation,
-                    jobLocation
-            );
+        // distance from agent's nearest battery station to job
+        float distanceNearestBSCurrentPositionToJob = this.mMap.getLocationsDistance(
+                nearestBatteryStationCurrentLocation,
+                jobLocation
+        );
+
+        System.out.println("Distance Job - BS_Job: " + distanceJobToBatteryStation);
+        System.out.println("Distance Agent - BS_Agent: " + distanceCurrentLocationToBatteryStation);
+        System.out.println("Distance BS_Agent - Job: " + distanceNearestBSCurrentPositionToJob);
+        System.out.println("Distance Agent - Job: " + distanceAgentToJob);
+
+
+        float distanceJobBS = distanceAgentToJob + distanceJobToBatteryStation;
+        float distanceBSJob = distanceCurrentLocationToBatteryStation + distanceNearestBSCurrentPositionToJob;
+
+
+        System.out.println("Distance Job -> BS: " + distanceJobBS);
+        System.out.println("Distance BS -> Job: " + distanceBSJob);
+
+
+        if(distanceJobBS > this.getBateryCharge())
+        {
+            return 0;
+        }
+        else if(distanceBSJob > this.getBateryCharge())
+        {
+            return 0;
         }
 
-        System.out.println("Distance com ir carregar: " + distance);
+        float bsVehicleCharge = this.getBateryCharge() - distanceCurrentLocationToBatteryStation;
+        float chargeLeftWhenOnBS = this.mBateryCapacity - bsVehicleCharge;
+        float timeToCharge = chargeLeftWhenOnBS /nearestBatteryStationCurrentLocation.getChargePerMinute();
 
-        compensationValue = Math.round(job.getPrice() - (costOfWork + distance));
+        System.out.println("Time to charge: " + timeToCharge);
 
-        System.out.println("compensation value is: " + compensationValue);
-        return compensationValue;
+        float totalTimeBSJob = timeToTravelDistance(distanceBSJob) + timeToCharge;
+        float totalTimeJobBS = timeToTravelDistance(distanceAgentToJob);
 
+        System.out.println("Total time BS -> Job: " + totalTimeBSJob);
+        System.out.println("Total time Job -> BS: " + totalTimeJobBS);
+
+        return (totalTimeBSJob < totalTimeJobBS) ? Math.round(totalTimeBSJob + toolsMissing) : Math.round(totalTimeJobBS + toolsMissing);
     }
 
     /**
