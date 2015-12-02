@@ -68,6 +68,6 @@ public class VehicleBehaviour extends ContractNetResponder {
 
     public void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
         System.out.println("Agent "+getAgent().getLocalName()+": Proposal rejected");
-        ((Vehicle) getAgent()).available = true;
+        //((Vehicle) getAgent()).available = true;
     }
 }

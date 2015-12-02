@@ -230,23 +230,7 @@ public class Vehicle extends Agent {
      */
     public Boolean performAction(Job job) {
 
-        System.out.println("STARTING JOB --- " + getClass());
-
-        System.out.println("Job Price: " + job.getPrice());
-        System.out.println("Products to make: " + Arrays.toString(job.getProductsToMake()));
-
-        ArrayList<Location> path = getBestPathToJob(job);
-
-        for(Location loc : path)
-        {
-            moveToLocation(loc);
-        }
-
-
-        System.out.println("ENDING JOB --- " + getClass());
-
-        available = true;
-
+        new WorkThread(this,job).start();
 
         return true;
     }
@@ -282,7 +266,7 @@ public class Vehicle extends Agent {
 
         this.mCurrentPosition = finalLocation.getPosition();
 
-        //System.out.println("chegou a localizacao " + finalLocation.getLocationName());
+        System.out.println("chegou a localizacao " + finalLocation.getLocationName());
         return true;
     }
 

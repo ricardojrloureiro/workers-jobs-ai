@@ -90,8 +90,8 @@ public class JobContractor extends Agent {
         }
 
         protected void handleInform(ACLMessage inform) {
-            System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
-            availableAgentsList.replace(inform.getSender(), false, true);
+            //System.out.println("Agent "+inform.getSender().getName()+" successfully performed the requested action");
+            //availableAgentsList.replace(inform.getSender(), false, true);
         }
 
 
@@ -137,12 +137,10 @@ public class JobContractor extends Agent {
                 // Fill the CFP message
                 ACLMessage msg = new ACLMessage(ACLMessage.CFP);
                 Iterator it = availableAgentsList.entrySet().iterator();
-                System.out.println("\nAvailable agents");
                 while (it.hasNext()) {
                     Map.Entry<AID, Boolean> pair = (Map.Entry) it.next();
                     if (pair.getValue()) {
                         msg.addReceiver(pair.getKey());
-                        System.out.print(pair.getKey().getName() + " , ");
                     }
                 }
 
@@ -164,8 +162,6 @@ public class JobContractor extends Agent {
             }
         }
     }
-
-
 
 
     protected void takeDown() {
