@@ -25,10 +25,12 @@ public class VehicleBehaviour extends ContractNetResponder {
 
     protected ACLMessage handleCfp(ACLMessage cfp) throws NotUnderstoodException, RefuseException {
         try {
+
             System.out.println("Job Received ----- TO: "
                     + getAgent().getLocalName() +
                     "   ------  Location: " + ((Job)cfp.getContentObject()).getFinalDestinationId());
 
+            System.out.println("Agent "+ getAgent().getLocalName() + " Availability: " + ((Vehicle) getAgent()).available);
             TimePricePair proposal = ((Vehicle) getAgent()).evaluateAction((Job) cfp.getContentObject());
 
             if (proposal != null) {
@@ -39,12 +41,16 @@ public class VehicleBehaviour extends ContractNetResponder {
                 ACLMessage propose = cfp.createReply();
                 propose.setPerformative(ACLMessage.PROPOSE);
                 propose.setContent(Integer.toString(proposal.time));
+                ((Vehicle) getAgent()).available = true;
                 return propose;
             }
             else {
                 // We refuse to provide a proposal
                 System.out.println("Agent "+getAgent().getLocalName()+": Refused job to location: " + ((Job)cfp.getContentObject()).getFinalDestinationId());
 
+                if(! ((Vehicle) getAgent()).working)
+                    ((Vehicle) getAgent()).available = true;
+                
                 throw new RefuseException("evaluation-failed");
             }
 
@@ -74,7 +80,8 @@ public class VehicleBehaviour extends ContractNetResponder {
     }
 
     public void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-       // System.out.println("Agent "+getAgent().getLocalName()+": Proposal rejected");
+        //System.out.println("Agent "+getAgent().getLocalName()+": Proposal rejected");
         ((Vehicle) getAgent()).available = true;
+        ((Vehicle) getAgent()).working = false;
     }
 }

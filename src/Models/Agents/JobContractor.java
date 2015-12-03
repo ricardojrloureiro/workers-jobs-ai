@@ -33,10 +33,10 @@ public class JobContractor extends Agent {
         HashMap<Integer, Integer> productsJob4 = new HashMap<>();
         productsJob4.put(1, 7);
 
-        mJobList.add(new Job(1000,new int[]{Tool.f1,Tool.f2},100,7, productsJob1));/*
+        mJobList.add(new Job(1000,new int[]{Tool.f1,Tool.f2},100,7, productsJob1));
         mJobList.add(new Job(780,new int[]{Tool.tool1,Tool.f2},160,9, productsJob2));
         mJobList.add(new Job(1928,new int[]{Tool.f1},180,5, productsJob3));
-        mJobList.add(new Job(19102,new int[]{Tool.f3},169,3, productsJob4));*/
+        mJobList.add(new Job(19102,new int[]{Tool.f3},169,3, productsJob4));
     }
 
     private class JobContractorBehaviour extends ContractNetInitiator {

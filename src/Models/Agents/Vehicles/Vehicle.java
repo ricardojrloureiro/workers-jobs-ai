@@ -16,6 +16,7 @@ import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
 import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import jade.wrapper.AgentContainer;
 import javafx.util.Pair;
@@ -29,6 +30,7 @@ public class Vehicle extends Agent {
     public static int STREET = 2;
 
     public boolean available = true;
+    public boolean working = false;
 
     private int mMoney;
     private int mSpeed;
@@ -173,17 +175,17 @@ public class Vehicle extends Agent {
             boolean nextStoreFound = false;
             for (Location s : storesToVisit) {
                 float pathLength = mMap.getLocationsDistance(currentLocation, this.mMap.getLocationIdFromPosition(s.getPosition()));
-                System.out.println("Distance to store : " + pathLength);
+                //System.out.println("Distance to store : " + pathLength);
                 if (shortestPath == -1 && hasBatteryToArriveLocationAndBatterryStation(s)) {
                     shortestPath = pathLength;
                     nextStore = s;
                     nextStoreFound = true;
-                    System.out.println("tem gasosa e e o 1");
+                    //System.out.println("tem gasosa e e o 1");
                 } else if (shortestPath > pathLength && hasBatteryToArriveLocationAndBatterryStation(s)) {
                     shortestPath = pathLength;
                     nextStore = s;
                     nextStoreFound = true;
-                    System.out.println("tem gasosa e e o 2");
+                    //System.out.println("tem gasosa e e o 2");
                 }
             }
             if (nextStoreFound){
@@ -249,7 +251,7 @@ public class Vehicle extends Agent {
 
             while(counter < result.length)
             {
-                ACLMessage reply = blockingReceive();
+                ACLMessage reply = blockingReceive(MessageTemplate.MatchInReplyTo("information_agent"));
                 if(reply.getPerformative() != ACLMessage.INFORM)
                     continue;
 
@@ -285,7 +287,7 @@ public class Vehicle extends Agent {
                 if(prod.getId() == p.getId()) {
                     float prodQuantity = locationsInformation.get(store).get(prod);
 
-                    System.out.println("Product/Quantity -> " +prod.getId() + "/" + prodQuantity + " ---    Prod Needed/Quantity --> " + p.getId() + "/" + needed);
+                    //System.out.println("Product/Quantity -> " +prod.getId() + "/" + prodQuantity + " ---    Prod Needed/Quantity --> " + p.getId() + "/" + needed);
 
                     Location currentLocation = mMap.getLocationIdFromPosition(getCurrentPosition());
                     Location storeLocation = mMap.getLocationIdFromPosition(store.getPosition());
@@ -352,32 +354,33 @@ public class Vehicle extends Agent {
      */
     public TimePricePair evaluateAction(Job job) {
 
-        System.out.println(this.getName() + " - Availability");
+        //System.out.println(this.getName() + " - Availability");
         if (!available)
             return null;
+
         available = false;
 
         Float totalPrice = 0.0f;
 
         ArrayList<Location> storeToVisit = locationsToVisit(job, totalPrice);
 
-        System.out.println(this.getName() + " - Stores to visit");
+        //System.out.println(this.getName() + " - Stores to visit");
         if (storeToVisit == null)
             return null;
 
-        System.out.println(this.getName() + " - Total Price");
+        //System.out.println(this.getName() + " - Total Price");
         if(totalPrice > job.getPrice())
         {
             return null;
         }
 
-        System.out.println(this.getName() + " - Test path");
+        //System.out.println(this.getName() + " - Test path");
         ArrayList<Location> path = getBestPathToJob(job, storeToVisit);
 
         if(path == null)
             return null;
 
-        System.out.println(this.getName() + " - Distance");
+        //System.out.println(this.getName() + " - Distance");
         float totalDistance = 0;
         for(int i = 0; i < path.size()-1; i++)
         {

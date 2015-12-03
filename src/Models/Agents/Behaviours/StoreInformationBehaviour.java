@@ -32,6 +32,7 @@ public class StoreInformationBehaviour extends SimpleBehaviour{
                     HashMap<Store,HashMap<Product, Integer>> sim = new HashMap<>();
                     sim.put(((Store)getAgent()), ((Store)getAgent()).getProducts());
                     reply.setContentObject( sim );
+                    reply.setInReplyTo("information_agent");
                     getAgent().send(reply);
                 } catch (IOException e) {
                     e.printStackTrace();

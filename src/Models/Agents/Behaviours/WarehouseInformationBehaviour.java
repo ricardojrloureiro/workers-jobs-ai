@@ -33,6 +33,7 @@ public class WarehouseInformationBehaviour extends SimpleBehaviour{
                     HashMap<Warehouse,HashMap<Product, Integer>> sim = new HashMap<>();
                     sim.put(((Warehouse)getAgent()), ((Warehouse)getAgent()).getProducts());
                     reply.setContentObject( sim );
+                    reply.setInReplyTo("information_agent");
                     getAgent().send(reply);
                 } catch (IOException e) {
                     e.printStackTrace();
