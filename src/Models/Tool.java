@@ -1,7 +1,9 @@
 package Models;
 
 
-public class Tool {
+import java.io.Serializable;
+
+public class Tool  implements Serializable {
 
     public static int f1 = 1;
     public static int f2 = 2;

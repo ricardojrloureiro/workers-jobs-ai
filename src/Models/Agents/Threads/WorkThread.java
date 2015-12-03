@@ -20,11 +20,16 @@ public class WorkThread extends Thread {
     public void run() {
         System.out.println("STARTING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());
 
-        ArrayList<Location> path = vehicle.getBestPathToJob(job);
+        Float price = 0.0f;
+
+        System.out.println("Vehicle ini Locaiton : "+ vehicle.getCurrentPosition());
+        ArrayList<Location> storesToVisit = vehicle.locationsToVisit(job, price);
+        ArrayList<Location> path = vehicle.getBestPathToJob(job, storesToVisit);
 
         for(Location loc : path)
         {
             vehicle.moveToLocation(loc);
+            System.out.println("Vehicle curr Locaiton : "+ vehicle.getCurrentPosition());
         }
 
         System.out.println("ENDING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());

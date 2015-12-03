@@ -1,5 +1,6 @@
 package Models.Agents.Vehicles;
 
+import Models.Agents.Behaviours.VehicleBehaviour;
 import Models.Agents.JobContractor;
 import Models.Tool;
 import jade.core.Agent;
@@ -22,7 +23,6 @@ public class Drone extends Vehicle {
     private static ArrayList<Integer> generateToolsArray()
     {
         ArrayList<Integer> tools = new ArrayList<>();
-        tools.add(Tool.f1);
 
         return tools;
     }

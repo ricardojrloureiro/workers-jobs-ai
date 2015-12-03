@@ -1,6 +1,8 @@
-package Models.Agents.Vehicles;
+package Models.Agents.Behaviours;
 
+import Models.Agents.Vehicles.Vehicle;
 import Models.Jobs.Job;
+import Models.TimePricePair;
 import jade.core.Agent;
 import jade.domain.FIPAAgentManagement.FailureException;
 import jade.domain.FIPAAgentManagement.NotUnderstoodException;
@@ -27,15 +29,16 @@ public class VehicleBehaviour extends ContractNetResponder {
                     + getAgent().getLocalName() +
                     "   ------  Location: " + ((Job)cfp.getContentObject()).getFinalDestinationId());
 
-            int proposal = ((Vehicle) getAgent()).evaluateAction((Job) cfp.getContentObject());
-            if (proposal > 0) {
+            TimePricePair proposal = ((Vehicle) getAgent()).evaluateAction((Job) cfp.getContentObject());
+
+            if (proposal != null) {
                 // We provide a proposal
                 System.out.println("Agent " + getAgent().getLocalName()
                         + ": Proposing " + " to "
                         +  ((Job)cfp.getContentObject()).getFinalDestinationId());
                 ACLMessage propose = cfp.createReply();
                 propose.setPerformative(ACLMessage.PROPOSE);
-                propose.setContent(String.valueOf(proposal));
+                propose.setContent(Integer.toString(proposal.time));
                 return propose;
             }
             else {

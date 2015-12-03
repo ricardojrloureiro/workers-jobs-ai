@@ -1,5 +1,6 @@
 package Models.Agents.Locations;
 
+import Models.Agents.Behaviours.StoreInformationBehaviour;
 import Models.Product;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
@@ -10,10 +11,11 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Store extends PointOfInterest {
+public class Store extends PointOfInterest implements Serializable{
     public static final String STORE_TYPE = "store";
 
 
@@ -39,41 +41,6 @@ public class Store extends PointOfInterest {
     }
 
     // TODO: check for needed products
-
-
-    /**
-     * Agent functions
-     */
-
-    private class StoreBehaviour extends SimpleBehaviour {
-        private int n = 0;
-
-        // construtor do behaviour
-        public StoreBehaviour(Agent a) {
-            super(a);
-        }
-
-        public void action() {
-            ACLMessage msg = blockingReceive();
-            if (msg.getPerformative() == ACLMessage.INFORM) {
-                Store s = (Store) this.getAgent();
-                System.out.println("SOU A Store " + s.getLocationName() + " " + s.getPosition());
-
-                for (java.util.Map.Entry<Product, Integer> entry : s.getProducts().entrySet()) {
-                    System.out.println("Produto: " + entry.getKey().getName());
-                    System.out.println("Quantidade: " + entry.getValue());
-                }
-
-            }
-
-        }
-
-        // m�todo done
-        public boolean done() {
-            return n==10;
-        }
-
-    }
 
 
     // m�todo setup
@@ -112,7 +79,7 @@ public class Store extends PointOfInterest {
         }
 
         // cria behaviour
-        StoreBehaviour b = new StoreBehaviour(this);
+        StoreInformationBehaviour b = new StoreInformationBehaviour(this);
         addBehaviour(b);
 
     }

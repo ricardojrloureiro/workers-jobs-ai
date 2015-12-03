@@ -23,10 +23,20 @@ public class JobContractor extends Agent {
 
     // Default constructor
     public JobContractor() {
-        mJobList.add(new Job(1000,new int[]{Tool.f1,Tool.f2},100,7,new int[]{4}));
-        mJobList.add(new Job(780,new int[]{Tool.tool1,Tool.f2},160,9,new int[]{2}));
-        mJobList.add(new Job(1928,new int[]{Tool.f1},180,5,new int[]{5}));
-        mJobList.add(new Job(19102,new int[]{Tool.f3},169,3,new int[]{1}));
+
+        HashMap<Integer, Integer> productsJob1 = new HashMap<>();
+        productsJob1.put(4, 10);
+        HashMap<Integer, Integer> productsJob2 = new HashMap<>();
+        productsJob2.put(2, 6);
+        HashMap<Integer, Integer> productsJob3 = new HashMap<>();
+        productsJob3.put(3, 40);
+        HashMap<Integer, Integer> productsJob4 = new HashMap<>();
+        productsJob4.put(1, 7);
+
+        mJobList.add(new Job(1000,new int[]{Tool.f1,Tool.f2},100,7, productsJob1));/*
+        mJobList.add(new Job(780,new int[]{Tool.tool1,Tool.f2},160,9, productsJob2));
+        mJobList.add(new Job(1928,new int[]{Tool.f1},180,5, productsJob3));
+        mJobList.add(new Job(19102,new int[]{Tool.f3},169,3, productsJob4));*/
     }
 
     private class JobContractorBehaviour extends ContractNetInitiator {

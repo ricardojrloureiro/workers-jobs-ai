@@ -1,8 +1,7 @@
 package Models.Agents.Vehicles;
 
+import Models.Agents.Behaviours.VehicleBehaviour;
 import Models.Tool;
-import jade.core.Agent;
-import jade.core.behaviours.SimpleBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;

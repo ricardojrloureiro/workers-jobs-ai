@@ -1,11 +1,14 @@
 package Models;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Product{
+public class Product implements Serializable{
     private float weight;
     private String name;
+    private int id;
+    private int price;
     private ArrayList<Tool> toolsRequiredtoProduce;
 
     /**
@@ -15,11 +18,13 @@ public class Product{
 
 
 
-    public Product(String name, float weight, ArrayList<Tool>  tools)
+    public Product(String name, float weight, ArrayList<Tool>  tools, int price, int id)
     {
         this.name = name;
         this.weight = weight;
         this.toolsRequiredtoProduce = tools;
+        this.price = price;
+        this.id = id;
     }
 
     public float getWeight() {
@@ -52,5 +57,13 @@ public class Product{
 
     public void setToolsRequiredtoProduce(ArrayList<Tool> toolsRequiredtoProduce) {
         this.toolsRequiredtoProduce = toolsRequiredtoProduce;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }

@@ -2,14 +2,26 @@ package Models.Agents.Vehicles;
 
 import Models.Agents.Locations.BatteryStation;
 import Models.Agents.Locations.Location;
+import Models.Agents.Locations.Store;
+import Models.Agents.Locations.Warehouse;
 import Models.Agents.Threads.WorkThread;
 import Models.Jobs.Job;
 import Models.Map;
+import Models.Product;
+import Models.TimePricePair;
+import Models.Tool;
 import jade.core.Agent;
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import jade.wrapper.AgentContainer;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Vehicle extends Agent {
 
@@ -101,23 +113,20 @@ public class Vehicle extends Agent {
         return distance/this.getSpeed();
     }
 
-    public ArrayList<Location> getBestPathToJob(Job job)
+
+    private boolean hasBatteryToArriveLocationAndBatterryStation(Location nextLocation)
     {
-
-        ArrayList<Location> path = new ArrayList<>();
-
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
-        Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
 
         // nearest battery station from agent current location
         BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
 
         // nearest battery station from job location
-        BatteryStation nearestBatteryStationJobLocation = (BatteryStation) this.mMap.getNearestBatteryStation(jobLocation);
+        BatteryStation nearestBatteryStationJobLocation = (BatteryStation) this.mMap.getNearestBatteryStation(nextLocation);
 
         // distance from jog location to battery station
         float distanceJobToBatteryStation = this.mMap.getLocationsDistance(
-                jobLocation,
+                nextLocation,
                 nearestBatteryStationJobLocation
         );
 
@@ -130,55 +139,68 @@ public class Vehicle extends Agent {
         // distance from agent to job
         float distanceAgentToJob = this.mMap.getLocationsDistance(
                 currentLocation,
-                jobLocation
+                nextLocation
         );
 
         // distance from agent's nearest battery station to job
         float distanceNearestBSCurrentPositionToJob = this.mMap.getLocationsDistance(
                 nearestBatteryStationCurrentLocation,
-                jobLocation
+                nextLocation
         );
 
-       // System.out.println("Distance Job - BS_Job: " + distanceJobToBatteryStation);
-       // System.out.println("Distance Agent - BS_Agent: " + distanceCurrentLocationToBatteryStation);
-       // System.out.println("Distance BS_Agent - Job: " + distanceNearestBSCurrentPositionToJob);
-       // System.out.println("Distance Agent - Job: " + distanceAgentToJob);
 
         float distanceJobBS = distanceAgentToJob + distanceJobToBatteryStation;
         float distanceBSJob = distanceCurrentLocationToBatteryStation + distanceNearestBSCurrentPositionToJob;
 
-
-        //System.out.println("Distance Job -> BS: " + distanceJobBS);
-        //System.out.println("Distance BS -> Job: " + distanceBSJob);
-
-        float totalTimeJobBS = -1;
-        float totalTimeBSJob = -1;
-        if(distanceBSJob < this.getBateryCharge())
-        {
-
-            float bsVehicleCharge = this.getBateryCharge() - distanceCurrentLocationToBatteryStation;
-            float chargeLeftWhenOnBS = this.mBateryCapacity - bsVehicleCharge;
-            float timeToCharge = chargeLeftWhenOnBS /nearestBatteryStationCurrentLocation.getChargePerMinute();
-            //System.out.println("Time to charge: " + timeToCharge);
-
-            totalTimeBSJob = timeToTravelDistance(distanceBSJob) + timeToCharge;
-        }
         if(distanceJobBS < this.getBateryCharge())
         {
-            totalTimeJobBS = timeToTravelDistance(distanceAgentToJob);
+            return false;
         }
 
-        if(totalTimeJobBS == -1)
-            totalTimeJobBS = totalTimeBSJob+1;
-        if(totalTimeBSJob == -1)
-            totalTimeBSJob = totalTimeJobBS+1;
+        return true;
+    }
 
-        path.add(currentLocation);
-        if(totalTimeBSJob > totalTimeJobBS)
+    public ArrayList<Location> getBestPathToJob(Job job , ArrayList<Location> storesToVisit)
+    {
+        ArrayList<Location> path = new ArrayList<>();
+
+        Location currentLocation = getCurrentLocation();
+        Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
+
+        int storesVisited = 0;
+        while(storesVisited < storesToVisit.size()) {
+            Location nextStore = null;
+            float shortestPath = -1;
+            boolean nextStoreFound = false;
+            for (Location s : storesToVisit) {
+                float pathLength = mMap.getLocationsDistance(currentLocation, this.mMap.getLocationIdFromPosition(s.getPosition()));
+                if (shortestPath == -1 && hasBatteryToArriveLocationAndBatterryStation(s)) {
+                    shortestPath = pathLength;
+                    nextStore = s;
+                    nextStoreFound = true;
+                } else if (shortestPath > pathLength && hasBatteryToArriveLocationAndBatterryStation(s)) {
+                    shortestPath = pathLength;
+                    nextStore = s;
+                    nextStoreFound = true;
+                }
+            }
+            if (nextStoreFound){
+                storesToVisit.remove(nextStore);
+                storesVisited++;
+            } else{
+                // nearest battery station from agent current location
+                BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
+                path.add(nearestBatteryStationCurrentLocation);
+                currentLocation = nearestBatteryStationCurrentLocation;
+            }
+        }
+
+        if(hasBatteryToArriveLocationAndBatterryStation(jobLocation))
         {
-            path.add(nearestBatteryStationCurrentLocation);
             path.add(jobLocation);
         }else{
+            BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
+            path.add(nearestBatteryStationCurrentLocation);
             path.add(jobLocation);
         }
 
@@ -186,32 +208,175 @@ public class Vehicle extends Agent {
     }
 
 
+    public Location getCurrentLocation()
+    {
+        return mMap.getLocationIdFromPosition(getCurrentPosition());
+    }
+
+
+
+    // TODO: analisar preco trabalho/preco loja
+    // TODO:
+
+    private HashMap<Location,HashMap<Product, Integer>> askInformationTo(String locationType)
+    {
+
+        HashMap<Location,HashMap<Product, Integer>> resultFromQuery = new HashMap<>();
+
+        DFAgentDescription template = new DFAgentDescription();
+        ServiceDescription sd1 = new ServiceDescription();
+        sd1.setType(locationType);
+        template.addServices(sd1);
+
+        try {
+            DFAgentDescription[] result = DFService.search(this, template);
+
+            ACLMessage msg = new ACLMessage(ACLMessage.QUERY_IF);
+            for(int i=0; i<result.length; ++i) {
+                msg.addReceiver(result[i].getName());
+            }
+
+            msg.setContent("products_list");
+            send(msg);
+
+
+            int counter = 0;
+
+            while(counter < result.length)
+            {
+                ACLMessage reply = blockingReceive();
+                if(reply.getPerformative() != ACLMessage.INFORM)
+                    continue;
+
+                HashMap<Location,HashMap<Product, Integer>> resultHashMap = (HashMap<Location,HashMap<Product, Integer>>)reply.getContentObject();
+                Location resultStore = ((Location)resultHashMap.keySet().toArray()[0]);
+                resultFromQuery.put(resultStore , resultHashMap.get(resultStore));
+                counter++;
+            }
+
+        } catch(FIPAException e) { e.printStackTrace(); } catch (UnreadableException e) {
+            e.printStackTrace();
+        }
+
+        return resultFromQuery;
+    }
+
+    private Location bestLocationsForProduct(Product p, int needed)
+    {
+        HashMap<Location,HashMap<Product, Integer>> storeInformation = askInformationTo("Store");
+        HashMap<Location,HashMap<Product, Integer>> warehouseInformation = askInformationTo("Warehouse");
+
+        HashMap<Location,HashMap<Product, Integer>> locationsInformation = new HashMap<Location,HashMap<Product, Integer>>();
+
+        locationsInformation.putAll(storeInformation);
+        locationsInformation.putAll(warehouseInformation);
+
+        Location bestStore = null;
+        float bestDistance = -1;
+
+        for (Location store : locationsInformation.keySet()) {
+            for (Product prod : locationsInformation.get(store).keySet()) {
+
+                if(prod.getId() == p.getId()) {
+                    float prodQuantity = locationsInformation.get(store).get(prod);
+
+                    System.out.println("Product/Quantity -> " +prod.getId() + "/" + prodQuantity + " ---    Prod Needed/Quantity --> " + p.getId() + "/" + needed);
+
+                    Location currentLocation = mMap.getLocationIdFromPosition(getCurrentPosition());
+                    Location storeLocation = mMap.getLocationIdFromPosition(store.getPosition());
+
+                    if (bestDistance == -1 && needed < prodQuantity) {
+                        bestDistance = mMap.getLocationsDistance(currentLocation, storeLocation);
+                        System.out.println("aqui");
+                    } else if (needed < prodQuantity && mMap.getLocationsDistance(currentLocation, storeLocation) < bestDistance) {
+                        bestStore = store;
+                        bestDistance = mMap.getLocationsDistance(currentLocation, storeLocation);
+                        System.out.println("aqui1");
+                    }
+
+                }
+            }
+        }
+
+        return bestStore;
+    }
+
+    private boolean hasToolForProduct(Product p)
+    {
+        boolean hasTools = true;
+        for(Tool toolId : p.getToolsRequiredtoProduce())
+        {
+            if(!getTools().contains(toolId.type))
+            {
+                hasTools = false;
+            }
+        }
+        return hasTools;
+    }
+
+
+    public ArrayList<Location> locationsToVisit(Job job, Float totalPrice)
+    {
+        ArrayList<Location> storeToVisit = new ArrayList<>();
+
+        for(Integer idProduto : job.getProductsToMake().keySet())
+        {
+            Integer quantity = job.getProductsToMake().get(idProduto);
+            Product product = mMap.getProductById(idProduto);
+            if(product != null)
+            {
+                if(!hasToolForProduct(product))
+                {
+                    Location bestStore = bestLocationsForProduct(product, quantity);
+                    if(bestStore == null)
+                    {
+                        return null;
+                    }
+                    storeToVisit.add(bestStore);
+                    totalPrice += product.getPrice() * quantity;
+                }
+            }
+        }
+
+        return storeToVisit;
+    }
+
     /**
      *
      * @param job that will be analysed
      * @return an integer that represents the value of the current job
      */
-    public int evaluateAction(Job job) {
+    public TimePricePair evaluateAction(Job job) {
 
-        if(!available)
-            return 0;
-
+        System.out.println(this.getName() + " - Availability");
+        if (!available)
+            return null;
         available = false;
 
-        int toolsMissing = 0;
+        Float totalPrice = 0.0f;
 
-        for (int i : job.getRequiredTools()) {
-            if (!mTools.contains(i))
-                toolsMissing++;
+        ArrayList<Location> storeToVisit = locationsToVisit(job, totalPrice);
+
+        System.out.println(this.getName() + " - Stores to visit");
+        if (storeToVisit == null)
+            return null;
+
+        System.out.println(this.getName() + " - Total Price");
+        if(totalPrice > job.getPrice())
+        {
+            return null;
         }
 
-        ArrayList<Location> path = getBestPathToJob(job);
+        System.out.println(this.getName() + " - Test path");
+        ArrayList<Location> path = getBestPathToJob(job, storeToVisit);
 
+        if(path == null)
+            return null;
+
+        System.out.println(this.getName() + " - Distance");
         float totalDistance = 0;
-
         for(int i = 0; i < path.size()-1; i++)
         {
-
             totalDistance += this.mMap.getLocationsDistance(
                     path.get(i),
                     path.get(i+1)
@@ -219,8 +384,7 @@ public class Vehicle extends Agent {
         }
 
         float totalTime = timeToTravelDistance(totalDistance);
-
-        return Math.round(totalTime + toolsMissing);
+        return new TimePricePair(Math.round(totalTime), Math.round(totalPrice));
     }
 
     /**

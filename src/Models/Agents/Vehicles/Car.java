@@ -1,5 +1,6 @@
 package Models.Agents.Vehicles;
 
+import Models.Agents.Behaviours.VehicleBehaviour;
 import Models.Tool;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -17,7 +18,6 @@ public class Car extends Vehicle {
     private static ArrayList<Integer> generateToolsArray()
     {
         ArrayList<Integer> tools = new ArrayList<>();
-        tools.add(Tool.f1);
         tools.add(Tool.f2);
 
         return tools;

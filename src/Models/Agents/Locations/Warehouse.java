@@ -1,6 +1,7 @@
 package Models.Agents.Locations;
 
 
+import Models.Agents.Behaviours.WarehouseInformationBehaviour;
 import Models.Product;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
@@ -11,10 +12,11 @@ import jade.domain.FIPAException;
 import jade.lang.acl.ACLMessage;
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Warehouse extends PointOfInterest {
+public class Warehouse extends PointOfInterest  implements Serializable {
 
     public static final String WAREHOUSE_TYPE = "warehouse";
 
@@ -49,40 +51,6 @@ public class Warehouse extends PointOfInterest {
     }
 
     // TODO: check for needed products
-
-
-    /**
-     * Agent functions
-     */
-
-    private class WarehouseBehaviour extends SimpleBehaviour {
-        private int n = 0;
-
-        // construtor do behaviour
-        public WarehouseBehaviour(Agent a) {
-            super(a);
-        }
-
-        public void action() {
-            ACLMessage msg = blockingReceive();
-            if (msg.getPerformative() == ACLMessage.INFORM) {
-                Warehouse w = (Warehouse) this.getAgent();
-                System.out.println("SOU A Warehouse " + w.getLocationName() + " " + w.getMaxWeight() + " " + w.getPosition());
-
-                for (java.util.Map.Entry<Product, Integer> entry : w.getProducts().entrySet()) {
-                    System.out.println("Produto: " + entry.getKey().getName());
-                    System.out.println("Quantidade: " + entry.getValue());
-                }
-            }
-
-        }
-
-        // m�todo done
-        public boolean done() {
-            return n==10;
-        }
-
-    }
 
 
     // m�todo setup
@@ -121,7 +89,7 @@ public class Warehouse extends PointOfInterest {
         }
 
         // cria behaviour
-        WarehouseBehaviour b = new WarehouseBehaviour(this);
+        WarehouseInformationBehaviour b = new WarehouseInformationBehaviour(this);
         addBehaviour(b);
 
     }

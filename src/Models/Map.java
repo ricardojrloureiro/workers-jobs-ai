@@ -33,8 +33,19 @@ public class Map {
 
     private static Map ref;
     private UndirectedGraph<Location,DistanceEdge> graph;
-    private ArrayList<Product> products_list;
+    public ArrayList<Product> products_list;
     private HashMap<Integer,HashMap<Integer,Integer>> poi_products;
+
+    public Product getProductById(int id)
+    {
+        for(Product p: products_list)
+        {
+            if(p.getId() == id)
+                return p;
+        }
+        return null;
+    }
+
 
     private Map(AgentContainer ac) {
         this.graph = new SimpleGraph<>(DistanceEdge.class);
@@ -147,6 +158,8 @@ public class Map {
 
             String name = getTextValue(product, "name");
             int weight = getIntValue(product, "weight");
+            int price = getIntValue(product, "price");
+            int id = getIntValue(product, "id");
             int time_to_produce = getIntValue(product,"time_to_produce");
 
 
@@ -161,7 +174,7 @@ public class Map {
                 toolsArray.add(new Tool(Tool.fromString(toolString)));
             }
 
-            Product p = new Product(name,weight, toolsArray);
+            Product p = new Product(name,weight, toolsArray, price,id);
             p.setTimeRequiredToProduce(time_to_produce);
 
             products_list.add(p);

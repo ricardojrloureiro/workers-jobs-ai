@@ -1,6 +1,7 @@
 package Models.Jobs;
 
 import java.io.Serializable;
+import java.util.HashMap;
 
 public class Job implements Serializable {
 
@@ -8,11 +9,11 @@ public class Job implements Serializable {
     private int mDeadLine; // time left to select the worker
     private int[] requiredTools;
     private int finalDestinationId;
-    private int[] productsToMake;
+    private HashMap<Integer, Integer> productsToMake;
     public static float PENALTY = 71;
     private float price;
 
-    public Job(float price, int[] requiredTools, int mTimeToComplete, int finalDestinationId, int[] productsToMake) {
+    public Job(float price, int[] requiredTools, int mTimeToComplete, int finalDestinationId, HashMap<Integer, Integer> productsToMake) {
         this.mTimeToComplete = mTimeToComplete;
         this.requiredTools = requiredTools;
         this.mDeadLine = 10;
@@ -37,7 +38,7 @@ public class Job implements Serializable {
         return finalDestinationId;
     }
 
-    public int[] getProductsToMake() {
+    public HashMap<Integer, Integer>  getProductsToMake() {
         return productsToMake;
     }
 
