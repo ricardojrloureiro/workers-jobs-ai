@@ -18,6 +18,7 @@ public class Car extends Vehicle {
     private static ArrayList<Integer> generateToolsArray()
     {
         ArrayList<Integer> tools = new ArrayList<>();
+        tools.add(Tool.f1);
         tools.add(Tool.f2);
 
         return tools;

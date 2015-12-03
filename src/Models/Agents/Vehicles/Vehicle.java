@@ -150,14 +150,13 @@ public class Vehicle extends Agent {
 
 
         float distanceJobBS = distanceAgentToJob + distanceJobToBatteryStation;
-        float distanceBSJob = distanceCurrentLocationToBatteryStation + distanceNearestBSCurrentPositionToJob;
 
         if(distanceJobBS < this.getBateryCharge())
         {
-            return false;
+            return true;
         }
 
-        return true;
+        return false;
     }
 
     public ArrayList<Location> getBestPathToJob(Job job , ArrayList<Location> storesToVisit)
@@ -174,20 +173,26 @@ public class Vehicle extends Agent {
             boolean nextStoreFound = false;
             for (Location s : storesToVisit) {
                 float pathLength = mMap.getLocationsDistance(currentLocation, this.mMap.getLocationIdFromPosition(s.getPosition()));
+                System.out.println("Distance to store : " + pathLength);
                 if (shortestPath == -1 && hasBatteryToArriveLocationAndBatterryStation(s)) {
                     shortestPath = pathLength;
                     nextStore = s;
                     nextStoreFound = true;
+                    System.out.println("tem gasosa e e o 1");
                 } else if (shortestPath > pathLength && hasBatteryToArriveLocationAndBatterryStation(s)) {
                     shortestPath = pathLength;
                     nextStore = s;
                     nextStoreFound = true;
+                    System.out.println("tem gasosa e e o 2");
                 }
             }
             if (nextStoreFound){
                 storesToVisit.remove(nextStore);
                 storesVisited++;
-            } else{
+            }
+            else if(getBateryCharge() == mBateryCapacity){
+                return null;
+            }else{
                 // nearest battery station from agent current location
                 BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
                 path.add(nearestBatteryStationCurrentLocation);
@@ -287,11 +292,10 @@ public class Vehicle extends Agent {
 
                     if (bestDistance == -1 && needed < prodQuantity) {
                         bestDistance = mMap.getLocationsDistance(currentLocation, storeLocation);
-                        System.out.println("aqui");
+                        bestStore = store;
                     } else if (needed < prodQuantity && mMap.getLocationsDistance(currentLocation, storeLocation) < bestDistance) {
                         bestStore = store;
                         bestDistance = mMap.getLocationsDistance(currentLocation, storeLocation);
-                        System.out.println("aqui1");
                     }
 
                 }

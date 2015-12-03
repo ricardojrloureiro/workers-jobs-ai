@@ -23,6 +23,7 @@ public class Drone extends Vehicle {
     private static ArrayList<Integer> generateToolsArray()
     {
         ArrayList<Integer> tools = new ArrayList<>();
+        tools.add(Tool.f1);
 
         return tools;
     }
