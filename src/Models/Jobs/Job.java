@@ -1,5 +1,8 @@
 package Models.Jobs;
 
+import Models.Agents.Locations.Location;
+import Models.Product;
+
 import java.io.Serializable;
 import java.util.HashMap;
 
@@ -21,6 +24,8 @@ public class Job implements Serializable {
         this.productsToMake = productsToMake;
         this.price = price;
     }
+
+
 
     public int getTimeToComplete() {
         return mTimeToComplete;

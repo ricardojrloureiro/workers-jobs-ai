@@ -347,6 +347,23 @@ public class Vehicle extends Agent {
         return storeToVisit;
     }
 
+
+    private float getAllJobWeight( Job job)
+    {
+        float weight = 0.0f;
+
+        for(Integer idProduto : job.getProductsToMake().keySet())
+        {
+            Integer quantity = job.getProductsToMake().get(idProduto);
+            Product product = mMap.getProductById(idProduto);
+            if(product != null)
+            {
+                weight += product.getWeight() * quantity;
+            }
+        }
+        return weight;
+    }
+
     /**
      *
      * @param job that will be analysed
@@ -361,6 +378,9 @@ public class Vehicle extends Agent {
         available = false;
 
         Float totalPrice = 0.0f;
+
+        if(getAllJobWeight(job) > getLoadCapacity())
+            return null;
 
         ArrayList<Location> storeToVisit = locationsToVisit(job, totalPrice);
 

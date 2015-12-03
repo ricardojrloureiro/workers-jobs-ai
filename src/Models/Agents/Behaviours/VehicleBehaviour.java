@@ -50,7 +50,7 @@ public class VehicleBehaviour extends ContractNetResponder {
 
                 if(! ((Vehicle) getAgent()).working)
                     ((Vehicle) getAgent()).available = true;
-                
+
                 throw new RefuseException("evaluation-failed");
             }
 

@@ -25,7 +25,7 @@ public class JobContractor extends Agent {
     public JobContractor() {
 
         HashMap<Integer, Integer> productsJob1 = new HashMap<>();
-        productsJob1.put(4, 10);
+        productsJob1.put(4, 2);
         HashMap<Integer, Integer> productsJob2 = new HashMap<>();
         productsJob2.put(2, 6);
         HashMap<Integer, Integer> productsJob3 = new HashMap<>();
