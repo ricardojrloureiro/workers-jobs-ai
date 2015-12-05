@@ -109,12 +109,10 @@ public class Vehicle extends Agent {
         this.mMap = Map.getMap(ac);
     }
 
-
     public float timeToTravelDistance(float distance)
     {
         return distance/this.getSpeed();
     }
-
 
     private boolean hasBatteryToArriveLocationAndBatterryStation(Location nextLocation)
     {
@@ -214,13 +212,10 @@ public class Vehicle extends Agent {
         return path;
     }
 
-
     public Location getCurrentLocation()
     {
         return mMap.getLocationIdFromPosition(getCurrentPosition());
     }
-
-
 
     // TODO: analisar preco trabalho/preco loja
     // TODO:

@@ -30,7 +30,7 @@ public class Car extends Vehicle {
         this.setBatteryCharge(500);
         this.setLoadCapacity(550);
         this.setMovementType(Vehicle.STREET);
-        this.setCurrentPosition(new Pair<>(-159f, 36f));
+        this.setCurrentPosition(new Pair<>(12f, 10f));
         this.setTools(Car.generateToolsArray());
         this.setmBateryCapacity(500);
         this.setmMoney(500);

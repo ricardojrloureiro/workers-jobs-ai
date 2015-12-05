@@ -24,7 +24,6 @@ public class Drone extends Vehicle {
     {
         ArrayList<Integer> tools = new ArrayList<>();
         tools.add(Tool.f1);
-
         return tools;
     }
 
@@ -64,7 +63,7 @@ public class Drone extends Vehicle {
         this.setBatteryCharge(250);
         this.setLoadCapacity(100);
         this.setMovementType(Vehicle.AIR);
-        this.setCurrentPosition(new Pair<>(-159f, 36f));
+        this.setCurrentPosition(new Pair<>(12f, 10f));
         this.setTools(Drone.generateToolsArray());
         this.setmBateryCapacity(250);
         this.setmMoney(500);
