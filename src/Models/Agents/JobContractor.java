@@ -1,11 +1,9 @@
 package Models.Agents;
 
-import Models.Agents.Behaviours.AuctionJobBehaviour;
 import Models.Jobs.Job;
 import Models.Tool;
 import jade.core.AID;
 import jade.core.Agent;
-import jade.core.behaviours.SequentialBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -139,8 +137,6 @@ public class JobContractor extends Agent {
             e.printStackTrace();
         }
 
-        SequentialBehaviour sequentialBehaviour = new SequentialBehaviour();
-
         // cria behaviour
         for(Job j: mJobList) {
             try {
@@ -166,21 +162,13 @@ public class JobContractor extends Agent {
                 msg.setReplyByDate(new Date(System.currentTimeMillis() + (j.getDeadline() * 1000)));
                 msg.setContentObject(j);
 
-                if(j.isAuction())
-                {
-                    AuctionJobBehaviour b = new AuctionJobBehaviour(this, j);
-                    sequentialBehaviour.addSubBehaviour(b);
-                }else {
-                    JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
-                    sequentialBehaviour.addSubBehaviour(b);
-                }
+                JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
+                addBehaviour(b);
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
-        addBehaviour(sequentialBehaviour);
     }
 
 

@@ -35,15 +35,15 @@ public class Vehicle extends Agent {
     private int mMoney;
     private int mSpeed;
     private int mBateryCharge;
-    private int mBateryCapacity;
+    protected int mBateryCapacity;
     private int mLoadCapacity;
     private int mMovementType;
 
-    private Pair<Float, Float> mCurrentPosition = new Pair<>(0.0f, 0.0f);
+    protected Pair<Float, Float> mCurrentPosition = new Pair<>(0.0f, 0.0f);
 
     private ArrayList<Integer> mTools = new ArrayList<>();
 
-    private Map mMap;
+    protected Map mMap;
 
     public void setSpeed(int speed) {
         this.mSpeed = speed;
@@ -114,12 +114,9 @@ public class Vehicle extends Agent {
         return distance/this.getSpeed();
     }
 
-    private boolean hasBatteryToArriveLocationAndBatterryStation(Location nextLocation)
+    protected boolean hasBatteryToArriveLocationAndBatterryStation(Location nextLocation)
     {
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
-
-        // nearest battery station from agent current location
-        BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
 
         // nearest battery station from job location
         BatteryStation nearestBatteryStationJobLocation = (BatteryStation) this.mMap.getNearestBatteryStation(nextLocation);
@@ -130,24 +127,11 @@ public class Vehicle extends Agent {
                 nearestBatteryStationJobLocation
         );
 
-        // distance from agent location to battery station
-        float distanceCurrentLocationToBatteryStation = this.mMap.getLocationsDistance(
-                currentLocation,
-                nearestBatteryStationCurrentLocation
-        );
-
         // distance from agent to job
         float distanceAgentToJob = this.mMap.getLocationsDistance(
                 currentLocation,
                 nextLocation
         );
-
-        // distance from agent's nearest battery station to job
-        float distanceNearestBSCurrentPositionToJob = this.mMap.getLocationsDistance(
-                nearestBatteryStationCurrentLocation,
-                nextLocation
-        );
-
 
         float distanceJobBS = distanceAgentToJob + distanceJobToBatteryStation;
 
@@ -343,7 +327,7 @@ public class Vehicle extends Agent {
     }
 
 
-    private float getAllJobWeight( Job job)
+    protected float getAllJobWeight( Job job)
     {
         float weight = 0.0f;
 
