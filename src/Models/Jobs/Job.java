@@ -16,6 +16,8 @@ public class Job implements Serializable {
     public static float PENALTY = 71;
     private float price;
 
+    private boolean auction = false;
+
     public Job(float price, int[] requiredTools, int mTimeToComplete, int finalDestinationId, HashMap<Integer, Integer> productsToMake) {
         this.mTimeToComplete = mTimeToComplete;
         this.requiredTools = requiredTools;
@@ -26,6 +28,11 @@ public class Job implements Serializable {
     }
 
 
+
+
+    public void setPrice(float price) {
+        this.price = price;
+    }
 
     public int getTimeToComplete() {
         return mTimeToComplete;
@@ -50,5 +57,13 @@ public class Job implements Serializable {
 
     public float getPrice() {
         return price;
+    }
+
+    public boolean isAuction() {
+        return auction;
+    }
+
+    public void setAuction(boolean auction) {
+        this.auction = auction;
     }
 }

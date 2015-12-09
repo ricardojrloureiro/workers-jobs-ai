@@ -31,7 +31,9 @@ public class VehicleBehaviour extends ContractNetResponder {
                     "   ------  Location: " + ((Job)cfp.getContentObject()).getFinalDestinationId());
 
             System.out.println("Agent "+ getAgent().getLocalName() + " Availability: " + ((Vehicle) getAgent()).available);
-            TimePricePair proposal = ((Vehicle) getAgent()).evaluateAction((Job) cfp.getContentObject());
+
+            Job job = (Job) cfp.getContentObject();
+            TimePricePair proposal = ((Vehicle) getAgent()).evaluateAction(job);
 
             if (proposal != null) {
                 // We provide a proposal

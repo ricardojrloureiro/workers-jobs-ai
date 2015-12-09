@@ -1,7 +1,10 @@
 package Models.Agents.Vehicles;
 
+import Models.Agents.Behaviours.AuctionJobBehaviour;
+import Models.Agents.Behaviours.AuctionVehicleBehaviour;
 import Models.Agents.Behaviours.VehicleBehaviour;
 import Models.Tool;
+import jade.core.behaviours.ParallelBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -54,7 +57,15 @@ public class Car extends Vehicle {
         MessageTemplate template = MessageTemplate.and(
                 MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
                 MessageTemplate.MatchPerformative(ACLMessage.CFP) );
+
+       // ParallelBehaviour parallelBehaviour = new ParallelBehaviour();
         VehicleBehaviour b = new VehicleBehaviour(this, template);
+        AuctionVehicleBehaviour auctionB = new AuctionVehicleBehaviour(this);
+        //parallelBehaviour.addSubBehaviour(b);
+        //parallelBehaviour.addSubBehaviour(auctionB);
+        //addBehaviour(parallelBehaviour);
+
+        addBehaviour(auctionB);
         addBehaviour(b);
     }
 

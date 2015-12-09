@@ -1,9 +1,11 @@
 package Models.Agents;
 
+import Models.Agents.Behaviours.AuctionJobBehaviour;
 import Models.Jobs.Job;
 import Models.Tool;
 import jade.core.AID;
 import jade.core.Agent;
+import jade.core.behaviours.SequentialBehaviour;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -27,9 +29,14 @@ public class JobContractor extends Agent {
         HashMap<Integer, Integer> productsJob1 = new HashMap<>();
         productsJob1.put(4, 1);
         HashMap<Integer, Integer> productsJob2 = new HashMap<>();
-        productsJob2.put(2, 6);
+        productsJob2.put(2, 4);
+        HashMap<Integer, Integer> productsJob3 = new HashMap<>();
+        productsJob3.put(2, 6);
 
         mJobList.add(new Job(5000,new int[]{Tool.f1,Tool.f2},100,17, productsJob1));
+        Job j = new Job(7000,new int[]{Tool.tool1,Tool.f2},160,20, productsJob3);
+        j.setAuction(true);
+        mJobList.add(j);
         mJobList.add(new Job(7000,new int[]{Tool.tool1,Tool.f2},160,20, productsJob2));
     }
 
@@ -132,6 +139,8 @@ public class JobContractor extends Agent {
             e.printStackTrace();
         }
 
+        SequentialBehaviour sequentialBehaviour = new SequentialBehaviour();
+
         // cria behaviour
         for(Job j: mJobList) {
             try {
@@ -157,13 +166,21 @@ public class JobContractor extends Agent {
                 msg.setReplyByDate(new Date(System.currentTimeMillis() + (j.getDeadline() * 1000)));
                 msg.setContentObject(j);
 
-                JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
-                addBehaviour(b);
+                if(j.isAuction())
+                {
+                    AuctionJobBehaviour b = new AuctionJobBehaviour(this, j);
+                    sequentialBehaviour.addSubBehaviour(b);
+                }else {
+                    JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
+                    sequentialBehaviour.addSubBehaviour(b);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
+        addBehaviour(sequentialBehaviour);
     }
 
 
