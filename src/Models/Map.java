@@ -36,6 +36,8 @@ public class Map {
     public ArrayList<Product> products_list;
     private HashMap<Integer,HashMap<Integer,Integer>> poi_products;
 
+    private ArrayList<Pair<Location, Location>> connectionsArray = new ArrayList<>();
+
     public Product getProductById(int id)
     {
         for(Product p: products_list)
@@ -46,8 +48,10 @@ public class Map {
         return null;
     }
 
+    public UndirectedGraph<Location,DistanceEdge> getGraph(){ return this.graph; }
 
-    private Map(AgentContainer ac) {
+
+    private Map(ContainerController ac) {
         this.graph = new SimpleGraph<>(DistanceEdge.class);
         this.products_list = new ArrayList<>();
         this.poi_products = new HashMap<>();
@@ -61,7 +65,7 @@ public class Map {
         }
     }
 
-    public static Map getMap(AgentContainer ac) {
+    public static Map getMap(ContainerController ac) {
         if (ref == null)
             // it's ok, we can call this constructor
             ref = new Map(ac);
@@ -182,7 +186,7 @@ public class Map {
         }
     }
 
-    private void parse (String filepath, AgentContainer ac) throws ParserConfigurationException {
+    private void parse (String filepath, ContainerController ac) throws ParserConfigurationException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder db = dbf.newDocumentBuilder();
         try {
@@ -220,11 +224,12 @@ public class Map {
 
             graph.addEdge(l1, l2, new DistanceEdge(distance));
 
+            connectionsArray.add(new Pair<>(l1, l2));
         }
 
     }
 
-    private BatteryStation getBatteryStation(Element POI, AgentContainer ac) {
+    private BatteryStation getBatteryStation(Element POI, ContainerController ac) {
         int id = Integer.parseInt(POI.getAttribute("id"));
         float chargePerMinute = getFloatValue(POI, "charge_per_minute");
         String name = getTextValue(POI, "name");
@@ -272,7 +277,7 @@ public class Map {
         return textVal;
     }
 
-    private void parseLocations(Element root, AgentContainer ac) throws StaleProxyException {
+    private void parseLocations(Element root, ContainerController ac) throws StaleProxyException {
         NodeList pointsOfInterest = root.getElementsByTagName("point_of_interest");
 
         for(int i = 0; i<pointsOfInterest.getLength(); i++) {
@@ -318,7 +323,7 @@ public class Map {
 
     }
 
-    private Store getStore(Element POI, AgentContainer ac) {
+    private Store getStore(Element POI, ContainerController ac) {
 
         int id = Integer.parseInt(POI.getAttribute("id"));
         String name = getTextValue(POI, "name");
@@ -354,7 +359,7 @@ public class Map {
         return store;
     }
 
-    private Warehouse getWarehouse(Element POI, AgentContainer ac) {
+    private Warehouse getWarehouse(Element POI, ContainerController ac) {
 
         int id = Integer.parseInt(POI.getAttribute("id"));
         String name = getTextValue(POI, "name");
@@ -399,7 +404,11 @@ public class Map {
 
     public Location getLocationIdFromPosition(Pair<Float, Float> position) {
         Stream<Location> matchesId1 =  graph.vertexSet().stream().filter(l -> l.getPosition().equals(position));
-        return matchesId1.findFirst().get();
+        if( matchesId1.count() > 0){
+            Stream<Location> matchesId2 =  graph.vertexSet().stream().filter(l -> l.getPosition().equals(position));
+            return matchesId2.findFirst().get();
+        }
+        return null;
     }
 
     public float getLocationsDistance(Location l1, Location l2) {
@@ -421,10 +430,14 @@ public class Map {
         return distance1 + distance2;
     }
 
+
+    public ArrayList<Pair<Location, Location>> getAllConnections(){
+        return this.connectionsArray;
+    }
+
     @Override
     public String toString() {
         return this.graph.toString();
     }
-
 
 }

@@ -3,6 +3,7 @@ package Models.Agents.Vehicles;
 
 import Models.Agents.Behaviours.AuctionVehicleBehaviour;
 import Models.Agents.Behaviours.VehicleBehaviour;
+import Models.GraphVisualisation;
 import Models.Tool;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -62,6 +63,7 @@ public class Truck extends Vehicle {
         addBehaviour(b);
         addBehaviour(auctionB);
 
+        graphVisualisation = new GraphVisualisation(this.getName(), this.getmMap(), this);
 
     }
 

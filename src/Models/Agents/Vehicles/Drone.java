@@ -5,12 +5,14 @@ import Models.Agents.Behaviours.VehicleBehaviour;
 import Models.Agents.JobContractor;
 import Models.Agents.Locations.BatteryStation;
 import Models.Agents.Locations.Location;
+import Models.GraphVisualisation;
 import Models.Jobs.Job;
 import Models.PriceObject;
 import Models.TimePricePair;
 import Models.Tool;
 import jade.core.Agent;
 import jade.core.behaviours.SimpleBehaviour;
+import jade.domain.AMSService;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.domain.FIPAAgentManagement.ServiceDescription;
@@ -64,7 +66,6 @@ public class Drone extends Vehicle {
 
     }
 
-
     // método setup
     protected void setup() {
         this.setMap(getContainerController());
@@ -100,21 +101,7 @@ public class Drone extends Vehicle {
         addBehaviour(b);
         addBehaviour(auctionB);
 
-        try {
-            AgentController aController = getContainerController().createNewAgent("Carro fixe",Car.class.getName(),null);
-            aController.start();
-        } catch (StaleProxyException e) {
-            e.printStackTrace();
-        }
-
-
-        try {
-            AgentController aController = getContainerController().createNewAgent("Contractor",JobContractor.class.getName(),null);
-            aController.start();
-        } catch (StaleProxyException e) {
-            e.printStackTrace();
-        }
-        
+        graphVisualisation = new GraphVisualisation(this.getName(), this.getmMap(), this);
     }
 
     // método takeDown

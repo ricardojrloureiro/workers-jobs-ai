@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 public class Vehicle extends Agent {
 
+    protected GraphVisualisation graphVisualisation;
     public static int AIR = 1;
     public static int STREET = 2;
 
@@ -402,6 +403,8 @@ public class Vehicle extends Agent {
      */
     public Boolean performAction(Job job) {
 
+
+        graphVisualisation.showMessage("New job started!");
         new WorkThread(this,job).start();
 
         return true;

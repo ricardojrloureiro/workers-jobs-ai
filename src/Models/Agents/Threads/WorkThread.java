@@ -2,7 +2,9 @@ package Models.Agents.Threads;
 
 import Models.Agents.Locations.Location;
 import Models.Agents.Vehicles.Vehicle;
+import Models.GraphVisualisation;
 import Models.Jobs.Job;
+import Models.Map;
 import Models.PriceObject;
 
 import java.util.ArrayList;
@@ -28,11 +30,12 @@ public class WorkThread extends Thread {
         ArrayList<Location> storesToVisit = vehicle.locationsToVisit(job, price);
         ArrayList<Location> path = vehicle.getBestPathToJob(job, storesToVisit);
 
+        System.out.println(path.size());
+
+
         for(Location loc : path)
         {
             vehicle.moveToLocation(loc);
-
-            System.out.println(vehicle.getmMap().toString());
         }
 
         System.out.println("ENDING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());

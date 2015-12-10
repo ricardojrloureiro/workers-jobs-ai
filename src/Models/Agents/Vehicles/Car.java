@@ -3,6 +3,7 @@ package Models.Agents.Vehicles;
 import Models.Agents.Behaviours.AuctionJobBehaviour;
 import Models.Agents.Behaviours.AuctionVehicleBehaviour;
 import Models.Agents.Behaviours.VehicleBehaviour;
+import Models.GraphVisualisation;
 import Models.Tool;
 import jade.core.behaviours.ParallelBehaviour;
 import jade.domain.DFService;
@@ -67,6 +68,9 @@ public class Car extends Vehicle {
 
         addBehaviour(auctionB);
         addBehaviour(b);
+
+
+        graphVisualisation = new GraphVisualisation(this.getName(), this.getmMap(), this);
     }
 
     protected void takeDown() {
