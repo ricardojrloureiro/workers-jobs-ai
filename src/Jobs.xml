@@ -5,14 +5,20 @@
 			<product id="4" quantity="1" />
 		</products>
 	</job>
-	<job name="A" price="7000" type="auction" location_id="20">
+	<job name="B" price="7000" type="auction" location_id="20">
 		<products>
 			<product id="2" quantity="1" />
 		</products>
 	</job>
-	<job name="A" price="7000" type="fixed" location_id="20">
+	<job name="C" price="7000" type="fixed" location_id="20">
 		<products>
 			<product id="2" quantity="6" />
+		</products>
+	</job>
+	<job name="D" price="400" type="auction" location_id="8">
+		<products>
+			<product id="2" quantity="6" />
+			<product id="5" quantity="2" />
 		</products>
 	</job>
 </jobs>

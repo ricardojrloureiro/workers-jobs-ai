@@ -47,8 +47,8 @@ public class GraphVisualisation extends JFrame
     public void showMessage(String message)
     {
         panel.msg = message;
-        repaint();
         panel.timer.restart();
+        repaint();
     }
 
     //create a component that you can actually draw on.
@@ -99,6 +99,12 @@ public class GraphVisualisation extends JFrame
             g.drawString("V", Math.round(vehicle.getCurrentLocation().getPosition().getKey()) *  MUL, Math.round(vehicle.getCurrentLocation().getPosition().getValue()) *  MUL);
 
 
+            g.setFont(new Font("TimesRoman", Font.PLAIN, 14));
+            g.setColor(Color.BLACK);
+            g.drawString("Cash: " + vehicle.mMoney + "$",
+                    Math.round(vehicle.getCurrentLocation().getPosition().getKey()) *  MUL,
+                    Math.round(vehicle.getCurrentLocation().getPosition().getValue()) *  MUL);
+
             for(int k = 0; k < m.getAllConnections().size(); k++)
             {
                 Pair<Location, Location> connection = m.getAllConnections().get(k);
@@ -114,9 +120,12 @@ public class GraphVisualisation extends JFrame
                 g.setFont(new Font("TimesRoman", Font.PLAIN, 30));
                 g.setColor(Color.BLACK);
 
-                g.drawString("New Job Started", Math.round(vehicle.getCurrentLocation().getPosition().getKey()) *  MUL, Math.round(vehicle.getCurrentLocation().getPosition().getValue()) *  MUL);
+                g.drawString(msg, Math.round(vehicle.getCurrentLocation().getPosition().getKey()) *  MUL, Math.round(vehicle.getCurrentLocation().getPosition().getValue()) *  MUL);
+
             }
             msg=null;
+
+
         }
 
         public void actionPerformed(ActionEvent ev){

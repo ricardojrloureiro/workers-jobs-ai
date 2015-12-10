@@ -40,6 +40,7 @@ public class WorkThread extends Thread {
 
         System.out.println("ENDING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());
 
+        vehicle.mMoney += job.getPrice();
         vehicle.available = true;
         vehicle.working = false;
     }

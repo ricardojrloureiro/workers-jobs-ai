@@ -30,7 +30,7 @@ public class Vehicle extends Agent {
     public boolean available = true;
     public boolean working = false;
 
-    private int mMoney;
+    public int mMoney = 0;
     private int mSpeed;
     private int mBateryCharge;
     protected int mBateryCapacity;
@@ -402,9 +402,7 @@ public class Vehicle extends Agent {
      * @return
      */
     public Boolean performAction(Job job) {
-
-
-        graphVisualisation.showMessage("New job started!");
+        graphVisualisation.showMessage("Job - " + job.getPrice());
         new WorkThread(this,job).start();
 
         return true;
