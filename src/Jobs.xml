@@ -1,10 +1,18 @@
 <?xml version="1.0"?>
 <jobs>
-	<job name="A" price="1000" type="auction" location_id="4">
+	<job name="A" price="5000" type="fixed" location_id="17">
 		<products>
-			<product id=1 quantity=700 />
-			<product id=2 quantity=420 />
-			<product id=4 quantity=123 />
+			<product id="4" quantity="1" />
+		</products>
+	</job>
+	<job name="A" price="7000" type="auction" location_id="20">
+		<products>
+			<product id="2" quantity="1" />
+		</products>
+	</job>
+	<job name="A" price="7000" type="fixed" location_id="20">
+		<products>
+			<product id="2" quantity="6" />
 		</products>
 	</job>
 </jobs>

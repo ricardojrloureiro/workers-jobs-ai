@@ -18,9 +18,8 @@ public class Job implements Serializable {
 
     private boolean auction = false;
 
-    public Job(float price, int[] requiredTools, int mTimeToComplete, int finalDestinationId, HashMap<Integer, Integer> productsToMake) {
+    public Job(float price, int mTimeToComplete, int finalDestinationId, HashMap<Integer, Integer> productsToMake) {
         this.mTimeToComplete = mTimeToComplete;
-        this.requiredTools = requiredTools;
         this.mDeadLine = 10;
         this.finalDestinationId = finalDestinationId;
         this.productsToMake = productsToMake;

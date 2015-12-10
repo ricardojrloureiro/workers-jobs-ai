@@ -11,7 +11,15 @@ import jade.domain.FIPAException;
 import jade.domain.FIPANames;
 import jade.lang.acl.ACLMessage;
 import jade.proto.ContractNetInitiator;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -24,6 +32,8 @@ public class JobContractor extends Agent {
     // Default constructor
     public JobContractor() {
 
+        parseJobs("src/Jobs.xml");
+        /*
         HashMap<Integer, Integer> productsJob1 = new HashMap<>();
         productsJob1.put(4, 1);
         HashMap<Integer, Integer> productsJob2 = new HashMap<>();
@@ -31,11 +41,70 @@ public class JobContractor extends Agent {
         HashMap<Integer, Integer> productsJob3 = new HashMap<>();
         productsJob3.put(2, 6);
 
-        mJobList.add(new Job(5000,new int[]{Tool.f1,Tool.f2},100,17, productsJob1));
-        Job j = new Job(7000,new int[]{Tool.tool1,Tool.f2},160,20, productsJob3);
+        mJobList.add(new Job(5000,100,17, productsJob1));
+        Job j = new Job(7000,160,20, productsJob3);
         j.setAuction(true);
         mJobList.add(j);
-        mJobList.add(new Job(7000,new int[]{Tool.tool1,Tool.f2},160,20, productsJob2));
+        mJobList.add(new Job(7000,160,20, productsJob2));
+        */
+    }
+
+    private void parseJobs(String filepath) {
+        try {
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            DocumentBuilder db = dbf.newDocumentBuilder();
+            Document doc = db.parse(new File(filepath));
+
+            Element rootEle = doc.getDocumentElement();
+            System.out.println(rootEle.getTagName());
+
+
+            NodeList jobs = rootEle.getElementsByTagName("job");
+
+            for(int i=0; i < jobs.getLength(); i++)
+            {
+                Element jobEle = (Element) jobs.item(i);
+
+                NodeList jobProductsNodeList = jobEle.getElementsByTagName("products");
+                Element jobProductsElement = (Element) jobProductsNodeList.item(0);
+
+
+                NodeList productsNodeList = jobProductsElement.getElementsByTagName("product");
+
+                for(int j = 0; j < productsNodeList.getLength(); j++) {
+                    Element product = (Element) productsNodeList.item(j);
+
+                    float price = Float.parseFloat(jobEle.getAttribute("price"));
+                    int timeToComplete = 100;
+                    String type = jobEle.getAttribute("type");
+                    int finalDestinationId = Integer.parseInt(jobEle.getAttribute("location_id"));
+
+                    int productId = Integer.parseInt(product.getAttribute("id"));
+                    int quantity = Integer.parseInt(product.getAttribute("quantity"));
+
+                    HashMap<Integer, Integer> productsJob = new HashMap<>();
+                    productsJob.put(productId,quantity);
+
+                    Job toAdd = new Job(price,timeToComplete,finalDestinationId, productsJob);
+                    if(type.equals("auction")) {
+                        toAdd.setAuction(true);
+                    }
+                    mJobList.add(toAdd);
+
+
+
+                }
+
+            }
+
+
+        } catch (SAXException | IOException e) {
+            e.printStackTrace();
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private class JobContractorBehaviour extends ContractNetInitiator {
