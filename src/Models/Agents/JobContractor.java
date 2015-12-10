@@ -27,7 +27,7 @@ public class JobContractor extends Agent {
         HashMap<Integer, Integer> productsJob1 = new HashMap<>();
         productsJob1.put(4, 1);
         HashMap<Integer, Integer> productsJob2 = new HashMap<>();
-        productsJob2.put(2, 4);
+        productsJob2.put(2, 1);
         HashMap<Integer, Integer> productsJob3 = new HashMap<>();
         productsJob3.put(2, 6);
 
@@ -40,8 +40,10 @@ public class JobContractor extends Agent {
 
     private class JobContractorBehaviour extends ContractNetInitiator {
 
+        private ACLMessage cfpDuplicated;
         public JobContractorBehaviour(Agent a, ACLMessage cfp) {
             super(a, cfp);
+            this.cfpDuplicated = cfp;
         }
 
         protected void handlePropose(ACLMessage propose, Vector v) {
@@ -90,10 +92,18 @@ public class JobContractor extends Agent {
                     }
                 }
             }
+            // System.out.println("best proposal" + bestProposal);
             // Accept the proposal of the best proposer
             if (accept != null) {
                 //System.out.println("Accepting proposal "+ bestProposal +" from responder "+ bestProposer.getLocalName());
                 accept.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            }else{
+                try {
+                    Thread.sleep(5000);
+                    reset(cfpDuplicated);
+                } catch (InterruptedException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
 

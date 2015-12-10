@@ -1,10 +1,12 @@
 package Models.Agents.Vehicles;
 
+import Models.Agents.Behaviours.AuctionVehicleBehaviour;
 import Models.Agents.Behaviours.VehicleBehaviour;
 import Models.Agents.JobContractor;
 import Models.Agents.Locations.BatteryStation;
 import Models.Agents.Locations.Location;
 import Models.Jobs.Job;
+import Models.PriceObject;
 import Models.TimePricePair;
 import Models.Tool;
 import jade.core.Agent;
@@ -20,7 +22,10 @@ import jade.wrapper.AgentController;
 import jade.wrapper.StaleProxyException;
 import javafx.util.Pair;
 
+import javax.swing.*;
 import java.util.ArrayList;
+
+
 
 public class Drone extends Vehicle {
 
@@ -91,7 +96,9 @@ public class Drone extends Vehicle {
         MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
         MessageTemplate.MatchPerformative(ACLMessage.CFP) );
         VehicleBehaviour b = new VehicleBehaviour(this, template);
+        AuctionVehicleBehaviour auctionB = new AuctionVehicleBehaviour(this);
         addBehaviour(b);
+        addBehaviour(auctionB);
 
         try {
             AgentController aController = getContainerController().createNewAgent("Carro fixe",Car.class.getName(),null);
@@ -107,7 +114,7 @@ public class Drone extends Vehicle {
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
-
+        
     }
 
     // método takeDown
@@ -126,6 +133,7 @@ public class Drone extends Vehicle {
 
         Location currentLocation = getCurrentLocation();
         Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
+        path.add(currentLocation);
 
         int storesVisited = 0;
         while(storesVisited < storesToVisit.size()) {
@@ -148,6 +156,7 @@ public class Drone extends Vehicle {
                 }
             }
             if (nextStoreFound){
+                path.add(nextStore);
                 storesToVisit.remove(nextStore);
                 storesVisited++;
             }
@@ -215,25 +224,26 @@ public class Drone extends Vehicle {
 
         available = false;
 
-        Float totalPrice = 0.0f;
+        PriceObject totalPrice = new PriceObject();
 
         if(getAllJobWeight(job) > getLoadCapacity())
             return null;
 
         ArrayList<Location> storeToVisit = locationsToVisit(job, totalPrice);
 
-        //System.out.println(this.getName() + " - Stores to visit");
+        //System.out.println(storeToVisit.size() + " - Stores to visit");
         if (storeToVisit == null)
             return null;
 
-        //System.out.println(this.getName() + " - Total Price");
-        if(totalPrice > job.getPrice())
+        //System.out.println(totalPrice.price + " - Total Price");
+        if(totalPrice.price > job.getPrice())
         {
             return null;
         }
 
         //System.out.println(this.getName() + " - Test path");
         ArrayList<Location> path = getBestPathToJob(job, storeToVisit);
+        //System.out.println(path.size() + " - Test path");
 
         if(path == null)
             return null;
@@ -248,7 +258,8 @@ public class Drone extends Vehicle {
             );
         }
 
+        //System.out.println("Total Distance = " + totalDistance);
         float totalTime = timeToTravelDistance(totalDistance);
-        return new TimePricePair(Math.round(totalTime), Math.round(totalPrice));
+        return new TimePricePair(Math.round(totalTime), Math.round(totalPrice.price));
     }
 }

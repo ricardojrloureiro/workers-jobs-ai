@@ -3,6 +3,7 @@ package Models.Agents.Threads;
 import Models.Agents.Locations.Location;
 import Models.Agents.Vehicles.Vehicle;
 import Models.Jobs.Job;
+import Models.PriceObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ public class WorkThread extends Thread {
         vehicle.working = true;
         System.out.println("STARTING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());
 
-        Float price = 0.0f;
+        PriceObject price = new PriceObject();
 
         ArrayList<Location> storesToVisit = vehicle.locationsToVisit(job, price);
         ArrayList<Location> path = vehicle.getBestPathToJob(job, storesToVisit);
@@ -30,6 +31,8 @@ public class WorkThread extends Thread {
         for(Location loc : path)
         {
             vehicle.moveToLocation(loc);
+
+            System.out.println(vehicle.getmMap().toString());
         }
 
         System.out.println("ENDING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());

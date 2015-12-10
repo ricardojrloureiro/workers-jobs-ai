@@ -1,15 +1,12 @@
 package Models.Agents.Vehicles;
 
+import Models.*;
 import Models.Agents.Locations.BatteryStation;
 import Models.Agents.Locations.Location;
 import Models.Agents.Locations.Store;
 import Models.Agents.Locations.Warehouse;
 import Models.Agents.Threads.WorkThread;
 import Models.Jobs.Job;
-import Models.Map;
-import Models.Product;
-import Models.TimePricePair;
-import Models.Tool;
 import jade.core.Agent;
 import jade.domain.DFService;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
@@ -145,10 +142,12 @@ public class Vehicle extends Agent {
 
     public ArrayList<Location> getBestPathToJob(Job job , ArrayList<Location> storesToVisit)
     {
+
         ArrayList<Location> path = new ArrayList<>();
 
         Location currentLocation = getCurrentLocation();
         Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
+        path.add(currentLocation);
 
         int storesVisited = 0;
         while(storesVisited < storesToVisit.size()) {
@@ -171,6 +170,7 @@ public class Vehicle extends Agent {
                 }
             }
             if (nextStoreFound){
+                path.add(nextStore);
                 storesToVisit.remove(nextStore);
                 storesVisited++;
             }
@@ -300,7 +300,7 @@ public class Vehicle extends Agent {
     }
 
 
-    public ArrayList<Location> locationsToVisit(Job job, Float totalPrice)
+    public ArrayList<Location> locationsToVisit(Job job, PriceObject totalPrice)
     {
         ArrayList<Location> storeToVisit = new ArrayList<>();
 
@@ -318,7 +318,7 @@ public class Vehicle extends Agent {
                         return null;
                     }
                     storeToVisit.add(bestStore);
-                    totalPrice += product.getPrice() * quantity;
+                    totalPrice.price += product.getPrice() * quantity;
                 }
             }
         }
@@ -356,25 +356,26 @@ public class Vehicle extends Agent {
 
         available = false;
 
-        Float totalPrice = 0.0f;
+        PriceObject totalPrice = new PriceObject();
 
         if(getAllJobWeight(job) > getLoadCapacity())
             return null;
 
         ArrayList<Location> storeToVisit = locationsToVisit(job, totalPrice);
 
-        //System.out.println(this.getName() + " - Stores to visit");
+
+        //System.out.println(storeToVisit.size() + " - Stores to visit");
         if (storeToVisit == null)
             return null;
 
-        //System.out.println(this.getName() + " - Total Price");
-        if(totalPrice > job.getPrice())
+        //System.out.println(totalPrice.price + " - Total Price");
+        if(totalPrice.price > job.getPrice())
         {
             return null;
         }
 
-        //System.out.println(this.getName() + " - Test path");
         ArrayList<Location> path = getBestPathToJob(job, storeToVisit);
+        //System.out.println(path.size() + " - Test path");
 
         if(path == null)
             return null;
@@ -389,8 +390,9 @@ public class Vehicle extends Agent {
             );
         }
 
+        //System.out.println("Total Distance = " + totalDistance);
         float totalTime = timeToTravelDistance(totalDistance);
-        return new TimePricePair(Math.round(totalTime), Math.round(totalPrice));
+        return new TimePricePair(Math.round(totalTime), Math.round(totalPrice.price));
     }
 
     /**

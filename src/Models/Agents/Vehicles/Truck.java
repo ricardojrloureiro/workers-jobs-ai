@@ -1,6 +1,7 @@
 package Models.Agents.Vehicles;
 
 
+import Models.Agents.Behaviours.AuctionVehicleBehaviour;
 import Models.Agents.Behaviours.VehicleBehaviour;
 import Models.Tool;
 import jade.domain.DFService;
@@ -57,7 +58,9 @@ public class Truck extends Vehicle {
                 MessageTemplate.MatchProtocol(FIPANames.InteractionProtocol.FIPA_CONTRACT_NET),
                 MessageTemplate.MatchPerformative(ACLMessage.CFP) );
         VehicleBehaviour b = new VehicleBehaviour(this, template);
+        AuctionVehicleBehaviour auctionB = new AuctionVehicleBehaviour(this);
         addBehaviour(b);
+        addBehaviour(auctionB);
 
 
     }
