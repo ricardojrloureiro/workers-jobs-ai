@@ -73,7 +73,6 @@ public class AuctionJobBehaviour extends SimpleBehaviour{
                 accepts.add(reply.getSender());
             }
             numResponses++;
-
         }
 
         if(accepts.size() > 1)

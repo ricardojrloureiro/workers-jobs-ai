@@ -30,7 +30,7 @@ public class WorkThread extends Thread {
         ArrayList<Location> storesToVisit = vehicle.locationsToVisit(job, price);
         ArrayList<Location> path = vehicle.getBestPathToJob(job, storesToVisit);
 
-        System.out.println(path.size());
+        //System.out.println(path.size());
 
 
         for(Location loc : path)

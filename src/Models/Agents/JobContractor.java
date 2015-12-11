@@ -73,29 +73,26 @@ public class JobContractor extends Agent {
 
                 NodeList productsNodeList = jobProductsElement.getElementsByTagName("product");
 
+                float price = Float.parseFloat(jobEle.getAttribute("price"));
+                int timeToComplete = 100;
+                String type = jobEle.getAttribute("type");
+                int finalDestinationId = Integer.parseInt(jobEle.getAttribute("location_id"));
+
+                HashMap<Integer, Integer> productsJob = new HashMap<>();
+
                 for(int j = 0; j < productsNodeList.getLength(); j++) {
                     Element product = (Element) productsNodeList.item(j);
-
-                    float price = Float.parseFloat(jobEle.getAttribute("price"));
-                    int timeToComplete = 100;
-                    String type = jobEle.getAttribute("type");
-                    int finalDestinationId = Integer.parseInt(jobEle.getAttribute("location_id"));
 
                     int productId = Integer.parseInt(product.getAttribute("id"));
                     int quantity = Integer.parseInt(product.getAttribute("quantity"));
 
-                    HashMap<Integer, Integer> productsJob = new HashMap<>();
                     productsJob.put(productId,quantity);
-
-                    Job toAdd = new Job(price,timeToComplete,finalDestinationId, productsJob);
-                    if(type.equals("auction")) {
-                        toAdd.setAuction(true);
-                    }
-                    mJobList.add(toAdd);
-
-
-
                 }
+                Job toAdd = new Job(price,timeToComplete,finalDestinationId, productsJob);
+                if(type.equals("auction")) {
+                    toAdd.setAuction(true);
+                }
+                mJobList.add(toAdd);
 
             }
 

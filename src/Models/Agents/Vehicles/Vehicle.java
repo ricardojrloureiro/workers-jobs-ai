@@ -394,7 +394,7 @@ public class Vehicle extends Agent {
 
         //System.out.println("Total Distance = " + totalDistance);
 
-        System.out.println(totalPrice.price + " - Total Price");
+        //System.out.println(totalPrice.price + " - Total Price");
         float totalTime = timeToTravelDistance(totalDistance);
         return new TimePricePair(Math.round(totalTime), Math.round(totalPrice.price));
     }

@@ -55,7 +55,8 @@ public class AuctionVehicleBehaviour extends SimpleBehaviour {
                         proposeTerms.setPerformative(ACLMessage.REJECT_PROPOSAL);
                         proposeTerms.setReplyWith("reply_auction");
                         getAgent().send(proposeTerms);
-                        ((Vehicle) getAgent()).available = true;
+                        if( ! ((Vehicle) getAgent()).working)
+                            ((Vehicle) getAgent()).available = true;
                     }
                 } catch (UnreadableException e) {
                     e.printStackTrace();

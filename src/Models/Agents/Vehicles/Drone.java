@@ -217,6 +217,7 @@ public class Drone extends Vehicle {
         available = false;
 
         PriceObject totalPrice = new PriceObject();
+        totalPrice.price = 10.0f;
 
         if(getAllJobWeight(job) > getLoadCapacity())
             return null;
