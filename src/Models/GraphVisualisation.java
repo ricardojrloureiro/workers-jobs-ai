@@ -1,12 +1,13 @@
 package Models;
 
 import javax.swing.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import Models.Agents.JobContractor;
 import Models.Agents.Locations.*;
-import Models.Agents.Vehicles.Car;
-import Models.Agents.Vehicles.Drone;
-import Models.Agents.Vehicles.Vehicle;
+import Models.Agents.Vehicles.*;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import jade.core.Runtime;
@@ -16,10 +17,16 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 import javafx.util.Pair;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 
 public class GraphVisualisation extends JFrame
 {
@@ -137,6 +144,80 @@ public class GraphVisualisation extends JFrame
     }
 
 
+    public static void parse(Element root, ContainerController ac)
+    {
+        NodeList vehicles = root.getElementsByTagName("vehicle");
+
+        for(int i = 0; i<vehicles.getLength(); i++) {
+            Element v = (Element) vehicles.item(i);
+            String type = v.getAttribute("type");
+
+            Object arguments[] = new Object[2];
+            arguments[0] = v.getAttribute("x");
+            arguments[1] = v.getAttribute("y");
+
+            switch (type) {
+                case "drone":
+                    try {
+                        AgentController agC = ac.createNewAgent(v.getAttribute("name"), Drone.class.getName(), arguments);
+                        agC.start();
+                    } catch (StaleProxyException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "car":
+                    try {
+                        AgentController agC = ac.createNewAgent(v.getAttribute("name"), Car.class.getName(), arguments);
+                        agC.start();
+                    } catch (StaleProxyException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "motorcycle":
+                    try {
+                        AgentController agC = ac.createNewAgent(v.getAttribute("name"), Motorcycle.class.getName(), arguments);
+                        agC.start();
+                    } catch (StaleProxyException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case "truck":
+                    try {
+                        AgentController agC = ac.createNewAgent(v.getAttribute("name"), Truck.class.getName(), arguments);
+                        agC.start();
+                    } catch (StaleProxyException e) {
+                        e.printStackTrace();
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public static void createAgents (String filepath, ContainerController ac) throws ParserConfigurationException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        try {
+            Document doc = db.parse(new File(filepath));
+
+            Element rootEle = doc.getDocumentElement();
+            parse(rootEle, ac);
+
+        } catch (SAXException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public static void main(String[] args)
     {
 
@@ -146,7 +227,12 @@ public class GraphVisualisation extends JFrame
 // create the Main-container
         ContainerController mainContainer = rt.createMainContainer(p);
 
-
+        try {
+            createAgents("src/Vehicles.xml", mainContainer);
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+/*
         try {
             AgentController ac = mainContainer.createNewAgent("drone", Drone.class.getName(), null);
             ac.start();
@@ -166,7 +252,7 @@ public class GraphVisualisation extends JFrame
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
-
+*/
 
         try {
             Thread.sleep(500);
@@ -179,6 +265,8 @@ public class GraphVisualisation extends JFrame
         } catch (StaleProxyException e) {
             e.printStackTrace();
         }
+
+
 
 
 

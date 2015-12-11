@@ -68,12 +68,17 @@ public class Drone extends Vehicle {
 
     // método setup
     protected void setup() {
+        Object[] args = getArguments();
+        String xCoord = args[0].toString();
+        String yCoord = args[1].toString();
+
+
         this.setMap(getContainerController());
         this.setSpeed(5);
         this.setBatteryCharge(250);
         this.setLoadCapacity(100);
         this.setMovementType(Vehicle.AIR);
-        this.setCurrentPosition(new Pair<>(12f, 10f));
+        this.setCurrentPosition(new Pair<>( Float.parseFloat(xCoord), Float.parseFloat(yCoord)));
         this.setTools(Drone.generateToolsArray());
         this.setmBateryCapacity(250);
         this.setmMoney(500);

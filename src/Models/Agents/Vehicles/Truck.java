@@ -28,12 +28,19 @@ public class Truck extends Vehicle {
     }
 
     protected void setup() {
+
+
+        Object[] args = getArguments();
+        String xCoord = args[0].toString();
+        String yCoord = args[1].toString();
+
+
         this.setMap(getContainerController());
         this.setSpeed(1);
         this.setBatteryCharge(3000);
         this.setLoadCapacity(1000);
         this.setMovementType(Vehicle.STREET);
-        this.setCurrentPosition(new Pair<>(0.0f, 0.0f));
+        this.setCurrentPosition(new Pair<>(Float.parseFloat(xCoord), Float.parseFloat(yCoord)));
         this.setTools(Truck.generateToolsArray());
         this.setmBateryCapacity(3000);
         this.setmMoney(500);

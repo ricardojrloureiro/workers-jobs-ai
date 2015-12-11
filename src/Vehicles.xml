@@ -1,0 +1,5 @@
+<vehicles>
+    <vehicle name="drone" type="drone" x="12" y="10"/>
+    <vehicle name="car" type="car" x="12" y="10"/>
+
+</vehicles>
