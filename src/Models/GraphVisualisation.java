@@ -8,8 +8,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import Models.Agents.JobContractor;
 import Models.Agents.Locations.*;
 import Models.Agents.Vehicles.*;
-import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.view.mxGraph;
 import jade.core.Runtime;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
