@@ -413,13 +413,25 @@ public class Vehicle extends Agent {
      * @param finalLocation final location
      * @return true or false, depending if had enough gas to perform the transition
      */
-    public boolean moveToLocation(Location finalLocation) {
+    public boolean moveToLocation(Vehicle v, Location finalLocation) {
 
         Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
         float distance = this.mMap.getLocationsDistance(
                 currentLocation,
                 finalLocation
         );
+
+        /** Charge vehicle */
+        if(currentLocation instanceof BatteryStation)
+        {
+            try {
+                Thread.sleep( Math.round((v.mBateryCapacity-v.mBateryCharge) / ((BatteryStation)currentLocation).getChargePerMinute() ));
+
+                v.mBateryCharge = v.mBateryCapacity;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         if(mBateryCharge - distance  < 0) {
             return false;

@@ -15,6 +15,15 @@
 			<product id="2" quantity="6" />
 		</products>
 	</job>
+
+
+	<job name="C" price="1000" type="fixed" location_id="10">
+		<products>
+			<product id="7" quantity="6" />
+		</products>
+	</job>
+
+
 	<job name="D" price="400" type="auction" location_id="8">
 		<products>
 			<product id="2" quantity="6" />

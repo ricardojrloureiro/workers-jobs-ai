@@ -35,12 +35,12 @@ public class WorkThread extends Thread {
 
         for(Location loc : path)
         {
-            vehicle.moveToLocation(loc);
+            vehicle.moveToLocation(vehicle, loc);
         }
 
         System.out.println("ENDING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());
 
-        vehicle.mMoney += job.getPrice();
+        vehicle.mMoney += (job.getPrice()-price.price);
         vehicle.available = true;
         vehicle.working = false;
     }

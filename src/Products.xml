@@ -65,7 +65,19 @@
             <tools>
                 <tool>f1</tool>
                 <tool>f3</tool>
-                <tool>tool1</tool> 
+                <tool>tool1</tool>
+            </tools>
+        </product>
+
+        <product>
+            <id>7</id>
+            <name>iPad</name>
+            <weight>87</weight>
+            <time_to_produce>10</time_to_produce>
+            <price>500</price>
+            <tools>
+                <tool>f1</tool>
+                <tool>f2</tool>
             </tools>
         </product>
 
@@ -77,6 +89,7 @@
             <product id="5" quantity="129" />
             <product id="6" quantity="200" />
             <product id="1" quantity="490" />
+            <product id="7" quantity="490" />
         </point_of_interest>
 
 
