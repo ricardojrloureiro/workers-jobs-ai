@@ -36,6 +36,7 @@ public class Vehicle extends Agent {
     protected int mBateryCapacity;
     private int mLoadCapacity;
     private int mMovementType;
+    public Job currentJob = null;
 
     protected Pair<Float, Float> mCurrentPosition = new Pair<>(0.0f, 0.0f);
 
@@ -403,6 +404,7 @@ public class Vehicle extends Agent {
      */
     public Boolean performAction(Job job) {
         graphVisualisation.showMessage("Job - " + job.getPrice());
+        this.currentJob = job;
         new WorkThread(this,job).start();
 
         return true;

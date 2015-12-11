@@ -82,20 +82,20 @@ public class GraphVisualisation extends JFrame
                         if(l instanceof BatteryStation)
                         {
                             g.setColor(Color.GREEN);
-                            g.drawString("BS", Math.round(j)* MUL, Math.round(i)* MUL);
+                            g.drawString("BS - " + l.getId(), Math.round(j)* MUL, Math.round(i)* MUL);
                         }
                         else if(l instanceof Warehouse)
                         {
                             g.setColor(Color.BLUE);
-                            g.drawString("WH", Math.round(j)* MUL, Math.round(i)* MUL);
+                            g.drawString("WH - " + l.getId(), Math.round(j)* MUL, Math.round(i)* MUL);
                         }else if(l instanceof Store)
                         {
                             g.setColor(Color.RED);
-                            g.drawString("ST", Math.round(j)* MUL, Math.round(i)* MUL);
+                            g.drawString("ST - " + l.getId(), Math.round(j)* MUL, Math.round(i)* MUL);
                         }
                         else{
                             g.setColor(Color.LIGHT_GRAY);
-                            g.drawString("PI", Math.round(j)* MUL, Math.round(i)* MUL);
+                            g.drawString("PI - " + l.getId(), Math.round(j)* MUL, Math.round(i)* MUL);
                         }
                     }
                 }
@@ -106,11 +106,6 @@ public class GraphVisualisation extends JFrame
             g.drawString("V", Math.round(vehicle.getCurrentLocation().getPosition().getKey()) *  MUL, Math.round(vehicle.getCurrentLocation().getPosition().getValue()) *  MUL);
 
 
-            g.setFont(new Font("TimesRoman", Font.PLAIN, 14));
-            g.setColor(Color.BLACK);
-            g.drawString("Cash: " + vehicle.mMoney + "$",
-                    Math.round(vehicle.getCurrentLocation().getPosition().getKey()) *  MUL,
-                    Math.round(vehicle.getCurrentLocation().getPosition().getValue()) *  MUL);
 
             for(int k = 0; k < m.getAllConnections().size(); k++)
             {
@@ -120,7 +115,40 @@ public class GraphVisualisation extends JFrame
                 Pair<Float, Float> coord2 = connection.getValue().getPosition();
                 g.drawLine(Math.round(coord1.getKey()) *  MUL, Math.round(coord1.getValue()) *  MUL,
                         Math.round(coord2.getKey()) *  MUL, Math.round(coord2.getValue())  *  MUL);
+
+
             }
+
+
+            g.setFont(new Font("TimesRoman", Font.PLAIN, 12));
+            g.setColor(Color.BLACK);
+            g.drawString("Bat: " + vehicle.getBateryCharge(),
+                    90 *  MUL,
+                    50 *  MUL);
+            g.drawString("Work: " + vehicle.working,
+                    90 *  MUL,
+                    51 *  MUL);
+            g.drawString("Avai: " + vehicle.available,
+                    90 *  MUL,
+                    52 *  MUL);
+            g.drawString("Cash: " + vehicle.mMoney + "$",
+                    90 *  MUL,
+                    53 *  MUL);
+            if(vehicle.currentJob != null) {
+                g.drawString("Job: " + vehicle.currentJob.getPrice() + "$",
+                        90 * MUL,
+                        54 * MUL);
+                g.drawString("Destination: " + vehicle.currentJob.getFinalDestinationId(),
+                        90 *  MUL,
+                        55 *  MUL);
+            }else{
+                g.drawString("Job: ----",
+                        90 * MUL,
+                        54 * MUL);
+            }
+
+
+
 
             if(msg != null)
             {
@@ -131,6 +159,8 @@ public class GraphVisualisation extends JFrame
 
             }
             msg=null;
+
+
 
 
         }

@@ -43,6 +43,7 @@ public class WorkThread extends Thread {
         vehicle.mMoney += (job.getPrice()-price.price);
         vehicle.available = true;
         vehicle.working = false;
+        vehicle.currentJob = null;
     }
 
 }
