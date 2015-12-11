@@ -139,6 +139,9 @@ public class GraphVisualisation extends JFrame
                 g.drawString("Destination: " + vehicle.currentJob.getFinalDestinationId(),
                         90 *  MUL,
                         55 *  MUL);
+                g.drawString("Auction: " + vehicle.currentJob.isAuction(),
+                        90 *  MUL,
+                        56 *  MUL);
             }else{
                 g.drawString("Job: ----",
                         90 * MUL,

@@ -1,5 +1,6 @@
 package Models.Agents;
 
+import Models.Agents.Behaviours.AuctionJobBehaviour;
 import Models.Jobs.Job;
 import Models.Tool;
 import jade.core.AID;
@@ -241,8 +242,14 @@ public class JobContractor extends Agent {
                 msg.setReplyByDate(new Date(System.currentTimeMillis() + (j.getDeadline() * 1000)));
                 msg.setContentObject(j);
 
-                JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
-                addBehaviour(b);
+                if(j.isAuction())
+                {
+                    AuctionJobBehaviour b = new AuctionJobBehaviour(this, j);
+                    addBehaviour(b);
+                }else {
+                    JobContractorBehaviour b = new JobContractorBehaviour(this, msg);
+                    addBehaviour(b);
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

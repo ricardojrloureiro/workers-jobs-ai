@@ -359,6 +359,7 @@ public class Vehicle extends Agent {
         available = false;
 
         PriceObject totalPrice = new PriceObject();
+        totalPrice.price = 10.0f;
 
         if(getAllJobWeight(job) > getLoadCapacity())
             return null;
@@ -370,7 +371,6 @@ public class Vehicle extends Agent {
         if (storeToVisit == null)
             return null;
 
-        //System.out.println(totalPrice.price + " - Total Price");
         if(totalPrice.price > job.getPrice())
         {
             return null;
@@ -393,6 +393,8 @@ public class Vehicle extends Agent {
         }
 
         //System.out.println("Total Distance = " + totalDistance);
+
+        System.out.println(totalPrice.price + " - Total Price");
         float totalTime = timeToTravelDistance(totalDistance);
         return new TimePricePair(Math.round(totalTime), Math.round(totalPrice.price));
     }

@@ -58,26 +58,27 @@ public class AuctionJobBehaviour extends SimpleBehaviour{
         int numResponses = 0;
         ArrayList<AID> accepts = new ArrayList<>();
 
+        //System.out.println("NEW AUCTION");
         while(numResponses < agents.size())
         {
-            System.out.println("a espera de resposta");
+            //System.out.println("a espera de resposta");
             ACLMessage reply = getAgent().blockingReceive(MessageTemplate.MatchReplyWith("reply_auction"), 1000);
 
             if(reply == null)
                 return accepts;
-            System.out.println("recebeu resposta " + reply.getPerformative());
+            //System.out.println("recebeu resposta " + reply.getPerformative());
 
             if(reply.getPerformative() == ACLMessage.ACCEPT_PROPOSAL)
             {
                 accepts.add(reply.getSender());
             }
-
-            if(accepts.size() > 1)
-            {
-                j.setPrice(j.getPrice() - 10);
-            }
             numResponses++;
 
+        }
+
+        if(accepts.size() > 1)
+        {
+            j.setPrice(j.getPrice() - 10);
         }
         return accepts;
     }
@@ -105,13 +106,14 @@ public class AuctionJobBehaviour extends SimpleBehaviour{
     private void acceptProposer(AID aid)
     {
         ACLMessage acceptMessage = new ACLMessage(ACLMessage.ACCEPT_PROPOSAL);
-        acceptMessage.setInReplyTo("reply_auction");
+        acceptMessage.setReplyWith("reply_auction");
         try {
             acceptMessage.setContentObject(this.j);
         } catch (IOException e) {
             e.printStackTrace();
         }
         acceptMessage.addReceiver(aid);
+        getAgent().send(acceptMessage);
     }
 
     @Override
@@ -128,9 +130,10 @@ public class AuctionJobBehaviour extends SimpleBehaviour{
 
         if( accepts.size() == 0)
         {
-            j.setPrice(j.getPrice()+10);
+            accepts = getAgents(getAgent());
+            j.setPrice(j.getPrice()+20);
 
-            sendMessage(agents);
+            sendMessage(accepts);
 
             accepts = handleResponse(agents);
         }
