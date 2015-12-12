@@ -25,10 +25,21 @@ public class WorkThread extends Thread {
         vehicle.working = true;
         System.out.println("STARTING JOB --- " + job.getFinalDestinationId() + " --- BY : " + vehicle.getLocalName());
 
+
+
+
         PriceObject price = new PriceObject();
+
 
         ArrayList<Location> storesToVisit = vehicle.locationsToVisit(job, price);
         ArrayList<Location> path = vehicle.getBestPathToJob(job, storesToVisit);
+
+
+        System.out.println("PATH (BAT : " +  vehicle.getBateryCharge() +": ");
+        for(Location l : path)
+        {
+            System.out.print(l.getId() + " , ");
+        }
 
         //System.out.println(path.size());
 

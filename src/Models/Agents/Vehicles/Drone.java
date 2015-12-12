@@ -121,7 +121,11 @@ public class Drone extends Vehicle {
 
     @Override
     public ArrayList<Location> getBestPathToJob(Job job, ArrayList<Location> storesToVisit) {
+
         ArrayList<Location> path = new ArrayList<>();
+
+
+        int initialBC = getBateryCharge();
 
         Location currentLocation = getCurrentLocation();
         Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
@@ -133,7 +137,7 @@ public class Drone extends Vehicle {
             float shortestPath = -1;
             boolean nextStoreFound = false;
             for (Location s : storesToVisit) {
-                float pathLength = getDistanceBeetwenLocations(currentLocation, this.mMap.getLocationIdFromPosition(s.getPosition()));
+                float pathLength = this.getDistanceBeetwenLocations(currentLocation, this.mMap.getLocationIdFromPosition(s.getPosition()));
                 //System.out.println("Distance to store : " + pathLength);
                 if (shortestPath == -1 && hasBatteryToArriveLocationAndBatterryStation(s)) {
                     shortestPath = pathLength;
@@ -153,12 +157,20 @@ public class Drone extends Vehicle {
                 storesVisited++;
             }
             else if(getBateryCharge() == mBateryCapacity){
+                this.setBatteryCharge(initialBC);
                 return null;
             }else{
                 // nearest battery station from agent current location
                 BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
-                path.add(nearestBatteryStationCurrentLocation);
-                currentLocation = nearestBatteryStationCurrentLocation;
+                if(mMap.getLocationsDistance(currentLocation, nearestBatteryStationCurrentLocation) < this.getBateryCharge()) {
+                    path.add(nearestBatteryStationCurrentLocation);
+                    currentLocation = nearestBatteryStationCurrentLocation;
+                    System.out.println("VISIT BS 1");
+                    this.setBatteryCharge(this.mBateryCapacity);
+                }else{
+                    this.setBatteryCharge(initialBC);
+                    return null;
+                }
             }
         }
 
@@ -167,10 +179,27 @@ public class Drone extends Vehicle {
             path.add(jobLocation);
         }else{
             BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
-            path.add(nearestBatteryStationCurrentLocation);
-            path.add(jobLocation);
+            if(mMap.getLocationsDistance(currentLocation, nearestBatteryStationCurrentLocation) < this.getBateryCharge()) {
+                System.out.println("VISIT BS 12");
+                path.add(nearestBatteryStationCurrentLocation);
+                currentLocation = nearestBatteryStationCurrentLocation;
+                this.setBatteryCharge(this.mBateryCapacity);
+                if(hasBatteryToArriveLocationAndBatterryStation(jobLocation))
+                {
+                    path.add(jobLocation);
+                }
+                else{
+                    this.setBatteryCharge(initialBC);
+                    return null;
+                }
+            }else{
+                this.setBatteryCharge(initialBC);
+                return null;
+            }
         }
 
+
+        this.setBatteryCharge(initialBC);
         return path;
     }
 
@@ -254,5 +283,47 @@ public class Drone extends Vehicle {
         //System.out.println("Total Distance = " + totalDistance);
         float totalTime = timeToTravelDistance(totalDistance);
         return new TimePricePair(Math.round(totalTime), Math.round(totalPrice.price));
+    }
+
+    @Override
+    public boolean moveToLocation(Vehicle v, Location finalLocation) {
+
+        Location currentLocation = this.mMap.getLocationIdFromPosition(this.mCurrentPosition);
+
+        float distance = this.getDistanceBeetwenLocations(
+                currentLocation,
+                finalLocation
+        );
+
+
+
+        if(getBateryCharge() - distance  < 0) {
+            return false;
+        } else {
+            this.setBatteryCharge(Math.round(this.getBateryCharge() - distance));
+        }
+        /** Charge vehicle */
+        if(currentLocation instanceof BatteryStation)
+        {
+            try {
+                Thread.sleep( Math.round((v.mBateryCapacity-v.getBateryCharge()) / ((BatteryStation)currentLocation).getChargePerMinute() ));
+
+                v.setBatteryCharge( v.mBateryCapacity );
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        long travelTime = (long) (distance/this.getSpeed() * 1000);
+
+        try {
+            Thread.sleep(travelTime);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        this.mCurrentPosition = finalLocation.getPosition();
+
+        return true;
     }
 }

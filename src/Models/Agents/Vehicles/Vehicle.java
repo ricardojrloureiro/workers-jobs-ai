@@ -147,6 +147,10 @@ public class Vehicle extends Agent {
 
         ArrayList<Location> path = new ArrayList<>();
 
+
+        int initialBC = getBateryCharge();
+
+
         Location currentLocation = getCurrentLocation();
         Location jobLocation = this.mMap.getLocationFromId(job.getFinalDestinationId());
         path.add(currentLocation);
@@ -177,12 +181,20 @@ public class Vehicle extends Agent {
                 storesVisited++;
             }
             else if(getBateryCharge() == mBateryCapacity){
+                this.mBateryCharge = initialBC;
                 return null;
             }else{
                 // nearest battery station from agent current location
                 BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
-                path.add(nearestBatteryStationCurrentLocation);
-                currentLocation = nearestBatteryStationCurrentLocation;
+                if(mMap.getLocationsDistance(currentLocation, nearestBatteryStationCurrentLocation) < this.mBateryCharge) {
+                    path.add(nearestBatteryStationCurrentLocation);
+                    currentLocation = nearestBatteryStationCurrentLocation;
+                    //System.out.println("VISIT BS 1");
+                    this.mBateryCharge = this.mBateryCapacity;
+                }else{
+                    this.mBateryCharge = initialBC;
+                    return null;
+                }
             }
         }
 
@@ -191,10 +203,27 @@ public class Vehicle extends Agent {
             path.add(jobLocation);
         }else{
             BatteryStation nearestBatteryStationCurrentLocation =  (BatteryStation) this.mMap.getNearestBatteryStation(currentLocation);
-            path.add(nearestBatteryStationCurrentLocation);
-            path.add(jobLocation);
+            if(mMap.getLocationsDistance(currentLocation, nearestBatteryStationCurrentLocation) < this.mBateryCharge) {
+                //System.out.println("VISIT BS 12");
+                path.add(nearestBatteryStationCurrentLocation);
+                currentLocation = nearestBatteryStationCurrentLocation;
+                this.mBateryCharge = this.mBateryCapacity;
+                if(hasBatteryToArriveLocationAndBatterryStation(jobLocation))
+                {
+                    path.add(jobLocation);
+                }
+                else{
+                    this.mBateryCharge = initialBC;
+                    return null;
+                }
+            }else{
+                this.mBateryCharge = initialBC;
+                return null;
+            }
         }
 
+
+        this.mBateryCharge = initialBC;
         return path;
     }
 
@@ -357,6 +386,10 @@ public class Vehicle extends Agent {
             return null;
 
         available = false;
+        if(this.getBateryCharge() == 0)
+        {
+            return null;
+        }
 
         PriceObject totalPrice = new PriceObject();
         totalPrice.price = 10.0f;
@@ -425,6 +458,14 @@ public class Vehicle extends Agent {
                 finalLocation
         );
 
+
+        if(mBateryCharge - distance  < 0) {
+            return false;
+        } else {
+            this.mBateryCharge -= distance;
+        }
+
+
         /** Charge vehicle */
         if(currentLocation instanceof BatteryStation)
         {
@@ -435,12 +476,6 @@ public class Vehicle extends Agent {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
-
-        if(mBateryCharge - distance  < 0) {
-            return false;
-        } else {
-            this.mBateryCharge -= distance;
         }
 
         long travelTime = (long) (distance/this.mSpeed * 1000);

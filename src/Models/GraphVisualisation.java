@@ -52,7 +52,6 @@ public class GraphVisualisation extends JFrame
     public void showMessage(String message)
     {
         panel.msg = message;
-        panel.timer.restart();
         repaint();
     }
 
@@ -160,10 +159,6 @@ public class GraphVisualisation extends JFrame
 
             }
             msg=null;
-
-
-
-
         }
 
         public void actionPerformed(ActionEvent ev){
