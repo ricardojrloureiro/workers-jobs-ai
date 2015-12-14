@@ -137,9 +137,14 @@ public class AuctionJobBehaviour extends SimpleBehaviour{
             accepts = handleResponse(agents);
         }
 
-        acceptProposer(accepts.get(0));
+        try {
+            acceptProposer(accepts.get(0));
 
-        done = true;
+            done = true;
+        }catch(Exception e)
+        {
+            done = false;
+        }
     }
 
     @Override
